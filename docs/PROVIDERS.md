@@ -6,43 +6,140 @@
 
 ### AWS (Amazon Web Services)
 - **モジュール**: `src/aws/`
-- **主要サービス**: 
-  - Compute: EC2, Lambda, ECS, EKS, Fargate
-  - その他多数のAWSサービス
+- **サービス**: 
+  - **Compute**: EC2, Lambda, ECS, EKS, Fargate
+  - **Database**: RDS, DynamoDB, Aurora, ElastiCache, Neptune
+  - **Storage**: S3, EBS, EFS, Glacier, Storage Gateway
+  - **Network**: VPC, ELB, CloudFront, Route53, API Gateway
+  - **Security**: IAM, KMS, WAF, Secrets Manager, GuardDuty
 
 ### GCP (Google Cloud Platform)
 - **モジュール**: `src/gcp/`
-- **主要サービス**:
-  - Compute: Compute Engine (GCE), Kubernetes Engine (GKE), Cloud Run, App Engine (GAE)
-  - エイリアス: GCE, GKE, GCF, GAE, CloudRun
+- **サービス**:
+  - **Compute**: Compute Engine (GCE), Kubernetes Engine (GKE), Cloud Run, App Engine (GAE), Functions
+  - **Database**: Cloud SQL, Bigtable, Firestore, Spanner, Memorystore
+  - **Storage**: Cloud Storage (GCS), Persistent Disk, Filestore
+  - **Network**: VPC, Load Balancing, Cloud CDN, Cloud DNS, Cloud Armor
+  - **Security**: IAM, KMS, Secret Manager, Security Command Center
+  - **エイリアス**: GCE, GKE, GCF, GAE, CloudRun, BigTable, SSD, GCS, IDS, VPC, ACM, IAM, KMS, SCC
 
 ### Azure (Microsoft Azure)
 - **モジュール**: `src/azure/`
-- **主要サービス**:
-  - Compute: Virtual Machines (VM), Kubernetes Services (AKS), Container Registries (ACR)
-  - その他: Function Apps, Container Apps, Batch Accounts
-  - エイリアス: AKS, ACR, VMSS
+- **サービス**:
+  - **Compute**: Virtual Machines (VM), Kubernetes Services (AKS), Container Instances, Function Apps
+  - **Database**: Cosmos DB, SQL Database, Database for PostgreSQL, Database for MySQL
+  - **Storage**: Blob Storage, File Shares, Data Lake Storage, Archive Storage
+  - **Network**: Virtual Networks, Load Balancers, Application Gateway, VPN Gateway
+  - **Security**: Key Vault, Azure AD, Security Center, Azure Sentinel
+  - **エイリアス**: AKS, ACR, VMSS
 
 ### K8s (Kubernetes)
 - **モジュール**: `src/k8s/`
-- **主要リソース**:
-  - Compute: Pod, Deployment, DaemonSet, StatefulSet, ReplicaSet, Job, Cronjob
-  - エイリアス: Deployment, DaemonSet, ReplicaSet, StatefulSet
+- **リソース**:
+  - **Compute**: Pod, Deployment, DaemonSet (DS), StatefulSet (STS), ReplicaSet (RS), Job, Cronjob
+  - **エイリアス**: Deployment, DaemonSet, ReplicaSet, StatefulSet
+
+### Programming (プログラミング)
+- **モジュール**: `src/programming/`
+- **リソース**:
+  - **Language**: Python, JavaScript, TypeScript, Go, Java, Rust, C, C++, PHP, Ruby, Scala, Swift, Kotlin
+  - **Framework**: React, Django, FastAPI, Flask, Angular, Vue, Spring, Laravel, Svelte
+  - **エイリアス**: JavaScript, NodeJS, PHP, TypeScript, FastAPI, DotNet, GraphQL, NextJs
+
+### OnPrem (オンプレミス)
+- **モジュール**: `src/onprem/`
+- **サービス**:
+  - **Database**: PostgreSQL, MySQL, MongoDB, Cassandra, ClickHouse, CockroachDB, InfluxDB, MariaDB
+  - **Network**: Nginx, HAProxy, Apache, Consul, Envoy, Istio, Traefik, Kong
+  - **Compute**: Server, Nomad
+  - **エイリアス**: ClickHouse, CockroachDB, CouchDB, HBase, InfluxDB, MariaDB, MongoDB, MSSQL, MySQL, PostgreSQL, HAProxy, ETCD
 
 ## 使用例
 
-### 単一プロバイダー
+### AWS サービス
 
 ```typescript
-import { Diagram, Cluster } from './src';
-import { GCE, GKE } from './src/gcp/compute';
+import { Diagram } from './src';
+import { EC2 } from './src/aws/compute';
+import { RDS } from './src/aws/database';
+import { S3 } from './src/aws/storage';
+import { VPC } from './src/aws/network';
+import { IAM } from './src/aws/security';
 
-const diagram = new Diagram({ name: 'GCP Architecture', show: false });
+const diagram = new Diagram({ name: 'AWS Services', show: false });
 
 await diagram.use(async () => {
-  const instance = new GCE('web-server');
-  const cluster = new GKE('k8s-cluster');
-  instance.to(cluster);
+  const vpc = new VPC('my-vpc');
+  const ec2 = new EC2('web-server');
+  const rds = new RDS('database');
+  const s3 = new S3('assets');
+  const iam = new IAM('security');
+  
+  ec2.to(rds);
+  ec2.to(s3);
+});
+```
+
+### GCP サービス
+
+```typescript
+import { Diagram } from './src';
+import { GCE, GKE } from './src/gcp/compute';
+import { Bigtable } from './src/gcp/database';
+import { GCS } from './src/gcp/storage';
+
+const diagram = new Diagram({ name: 'GCP Services', show: false });
+
+await diagram.use(async () => {
+  const gce = new GCE('compute');
+  const gke = new GKE('k8s-cluster');
+  const bigtable = new Bigtable('nosql-db');
+  const gcs = new GCS('storage');
+  
+  gce.to(gke);
+  gke.to(bigtable);
+  gce.to(gcs);
+});
+```
+
+### プログラミングスタック
+
+```typescript
+import { Diagram } from './src';
+import { Python, JavaScript } from './src/programming/language';
+import { Django, React } from './src/programming/framework';
+
+const diagram = new Diagram({ name: 'App Stack', show: false });
+
+await diagram.use(async () => {
+  const python = new Python('backend');
+  const django = new Django('api');
+  const js = new JavaScript('frontend');
+  const react = new React('ui');
+  
+  python.to(django);
+  js.to(react);
+  react.to(django);
+});
+```
+
+### オンプレミスインフラ
+
+```typescript
+import { Diagram } from './src';
+import { PostgreSQL } from './src/onprem/database';
+import { Nginx } from './src/onprem/network';
+import { Server } from './src/onprem/compute';
+
+const diagram = new Diagram({ name: 'On-Premise', show: false });
+
+await diagram.use(async () => {
+  const nginx = new Nginx('web-proxy');
+  const server = new Server('app-server');
+  const postgres = new PostgreSQL('database');
+  
+  nginx.to(server);
+  server.to(postgres);
 });
 ```
 

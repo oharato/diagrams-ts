@@ -131,10 +131,42 @@ main();
 
 ## サポートされているプロバイダー
 
-- **AWS**: EC2, Lambda, ECS, EKSなど
-- **GCP**: Compute Engine, Kubernetes Engine, Cloud Runなど
-- **Azure**: VM, AKS, Container Registriesなど
-- **Kubernetes**: Pod, Deployment, StatefulSetなど
+### クラウドプロバイダー
+
+#### AWS (Amazon Web Services)
+- **Compute**: EC2, Lambda, ECS, EKS, Fargate
+- **Database**: RDS, DynamoDB, Aurora, ElastiCache
+- **Storage**: S3, EBS, EFS, Glacier
+- **Network**: VPC, ELB, CloudFront, Route53
+- **Security**: IAM, KMS, WAF, Secrets Manager
+
+#### GCP (Google Cloud Platform)
+- **Compute**: Compute Engine (GCE), Kubernetes Engine (GKE), Cloud Run, App Engine
+- **Database**: Cloud SQL, Bigtable, Firestore, Spanner
+- **Storage**: Cloud Storage (GCS), Persistent Disk, Filestore
+- **Network**: VPC, Load Balancing, Cloud CDN, Cloud DNS
+- **Security**: IAM, KMS, Secret Manager, Cloud Armor
+
+#### Azure (Microsoft Azure)
+- **Compute**: Virtual Machines, AKS, Container Instances, Function Apps
+- **Database**: Cosmos DB, SQL Database, Database for PostgreSQL/MySQL
+- **Storage**: Blob Storage, File Shares, Data Lake Storage
+- **Network**: Virtual Networks, Load Balancer, Application Gateway
+- **Security**: Key Vault, Azure AD, Security Center
+
+#### Kubernetes
+- **Compute**: Pod, Deployment, StatefulSet, DaemonSet, Job, CronJob
+
+### その他のプロバイダー
+
+#### Programming (プログラミング)
+- **Languages**: Python, JavaScript, TypeScript, Go, Java, Rust, C++など
+- **Frameworks**: React, Django, FastAPI, Flask, Angular, Vueなど
+
+#### OnPrem (オンプレミス)
+- **Database**: PostgreSQL, MySQL, MongoDB, Cassandra, Redisなど
+- **Network**: Nginx, HAProxy, Apache, Consulなど
+- **Compute**: Server, Nomad
 
 ## プロジェクト構造
 
