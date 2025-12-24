@@ -139,6 +139,9 @@ main();
 - **Storage**: S3, EBS, EFS, Glacier
 - **Network**: VPC, ELB, CloudFront, Route53
 - **Security**: IAM, KMS, WAF, Secrets Manager
+- **Analytics**: Athena, EMR, Kinesis, QuickSight
+- **Integration**: SNS, SQS, EventBridge, Step Functions
+- **ML**: SageMaker, Bedrock, Comprehend, Rekognition
 
 #### GCP (Google Cloud Platform)
 - **Compute**: Compute Engine (GCE), Kubernetes Engine (GKE), Cloud Run, App Engine
@@ -146,6 +149,8 @@ main();
 - **Storage**: Cloud Storage (GCS), Persistent Disk, Filestore
 - **Network**: VPC, Load Balancing, Cloud CDN, Cloud DNS
 - **Security**: IAM, KMS, Secret Manager, Cloud Armor
+- **Analytics**: BigQuery, Dataflow, Dataproc, Pub/Sub
+- **ML**: AI Platform, AutoML, Vision API, Natural Language API
 
 #### Azure (Microsoft Azure)
 - **Compute**: Virtual Machines, AKS, Container Instances, Function Apps
@@ -153,9 +158,13 @@ main();
 - **Storage**: Blob Storage, File Shares, Data Lake Storage
 - **Network**: Virtual Networks, Load Balancer, Application Gateway
 - **Security**: Key Vault, Azure AD, Security Center
+- **Analytics**: Synapse Analytics, Databricks, Event Hubs
+- **ML**: Azure OpenAI, Cognitive Services, ML Workspaces
 
 #### Kubernetes
 - **Compute**: Pod, Deployment, StatefulSet, DaemonSet, Job, CronJob
+- **Network**: Service, Ingress, Endpoint, NetworkPolicy
+- **Storage**: PersistentVolume, PersistentVolumeClaim, StorageClass
 
 ### その他のプロバイダー
 
@@ -167,6 +176,8 @@ main();
 - **Database**: PostgreSQL, MySQL, MongoDB, Cassandra, Redisなど
 - **Network**: Nginx, HAProxy, Apache, Consulなど
 - **Compute**: Server, Nomad
+- **Monitoring**: Prometheus, Grafana, Datadog, Splunk
+- **Queue**: Kafka, RabbitMQ, ActiveMQ, Celery
 
 ## プロジェクト構造
 

@@ -12,6 +12,9 @@
   - **Storage**: S3, EBS, EFS, Glacier, Storage Gateway
   - **Network**: VPC, ELB, CloudFront, Route53, API Gateway
   - **Security**: IAM, KMS, WAF, Secrets Manager, GuardDuty
+  - **Analytics**: Athena, EMR, Glue, Kinesis, QuickSight, Redshift
+  - **Integration**: SNS, SQS, EventBridge, Step Functions, AppSync
+  - **Machine Learning**: SageMaker, Bedrock, Comprehend, Rekognition, Lex
 
 ### GCP (Google Cloud Platform)
 - **モジュール**: `src/gcp/`
@@ -21,7 +24,9 @@
   - **Storage**: Cloud Storage (GCS), Persistent Disk, Filestore
   - **Network**: VPC, Load Balancing, Cloud CDN, Cloud DNS, Cloud Armor
   - **Security**: IAM, KMS, Secret Manager, Security Command Center
-  - **エイリアス**: GCE, GKE, GCF, GAE, CloudRun, BigTable, SSD, GCS, IDS, VPC, ACM, IAM, KMS, SCC
+  - **Analytics**: BigQuery, Dataflow, Dataproc, Pub/Sub, Composer
+  - **Machine Learning**: AI Platform, AutoML, Vision API, Natural Language API, Speech-to-Text
+  - **エイリアス**: GCE, GKE, GCF, GAE, CloudRun, BigTable, SSD, GCS, IDS, VPC, ACM, IAM, KMS, SCC, BigQuery, PubSub, AutoML
 
 ### Azure (Microsoft Azure)
 - **モジュール**: `src/azure/`
@@ -31,13 +36,17 @@
   - **Storage**: Blob Storage, File Shares, Data Lake Storage, Archive Storage
   - **Network**: Virtual Networks, Load Balancers, Application Gateway, VPN Gateway
   - **Security**: Key Vault, Azure AD, Security Center, Azure Sentinel
-  - **エイリアス**: AKS, ACR, VMSS
+  - **Analytics**: Synapse Analytics, Databricks, Data Factory, Event Hubs, HDInsight
+  - **Machine Learning**: Azure OpenAI, Cognitive Services, ML Workspaces, Bot Services
+  - **エイリアス**: AKS, ACR, VMSS, Databricks, Synapse, OpenAI, MLWorkspaces
 
 ### K8s (Kubernetes)
 - **モジュール**: `src/k8s/`
 - **リソース**:
   - **Compute**: Pod, Deployment, DaemonSet (DS), StatefulSet (STS), ReplicaSet (RS), Job, Cronjob
-  - **エイリアス**: Deployment, DaemonSet, ReplicaSet, StatefulSet
+  - **Network**: Service (SVC), Ingress (Ing), Endpoint (Ep), NetworkPolicy (Netpol)
+  - **Storage**: PersistentVolume (PV), PersistentVolumeClaim (PVC), StorageClass (SC), Volume (Vol)
+  - **エイリアス**: Deployment, DaemonSet, ReplicaSet, StatefulSet, Service, Ingress, Endpoint, NetworkPolicy, PersistentVolume, PersistentVolumeClaim, StorageClass, Volume
 
 ### Programming (プログラミング)
 - **モジュール**: `src/programming/`
@@ -52,7 +61,9 @@
   - **Database**: PostgreSQL, MySQL, MongoDB, Cassandra, ClickHouse, CockroachDB, InfluxDB, MariaDB
   - **Network**: Nginx, HAProxy, Apache, Consul, Envoy, Istio, Traefik, Kong
   - **Compute**: Server, Nomad
-  - **エイリアス**: ClickHouse, CockroachDB, CouchDB, HBase, InfluxDB, MariaDB, MongoDB, MSSQL, MySQL, PostgreSQL, HAProxy, ETCD
+  - **Monitoring**: Prometheus, Grafana, Datadog, Nagios, Splunk, Thanos
+  - **Queue**: Kafka, RabbitMQ, ActiveMQ, Celery, NATS, ZeroMQ
+  - **エイリアス**: ClickHouse, CockroachDB, CouchDB, HBase, InfluxDB, MariaDB, MongoDB, MSSQL, MySQL, PostgreSQL, HAProxy, ETCD, NewRelic, ActiveMQ, RabbitMQ, ZeroMQ
 
 ## 使用例
 
