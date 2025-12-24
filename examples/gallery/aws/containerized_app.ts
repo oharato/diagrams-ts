@@ -27,19 +27,15 @@ async function createContainerizedAppDiagram() {
     
     dns.to(lb);
 
-    // Container Registry
-    const registryCluster = new Cluster({ label: 'Container Registry' });
-    await registryCluster.use(async () => {
-      const ecr = new ECR('app-images');
-    });
-
     // Application Containers
     const appCluster = new Cluster({ label: 'ECS Services' });
     await appCluster.use(async () => {
+      const ecr = new ECR('container-registry');
       const webService = new ECS('web-service');
       const apiService = new ECS('api-service');
       const workerService = new ECS('worker-service');
       
+      ecr.to(webService);
       lb.to(webService);
       webService.to(apiService);
       apiService.to(workerService);

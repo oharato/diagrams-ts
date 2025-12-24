@@ -29,15 +29,14 @@ async function createWebAppStackDiagram() {
       reactApp.to(typescript);
     });
 
-    // Reverse Proxy
-    const proxy = new Nginx('reverse-proxy');
-
     // Backend
     const backendCluster = new Cluster({ label: 'Backend' });
     await backendCluster.use(async () => {
+      const proxy = new Nginx('reverse-proxy');
       const nodeApp = new NodeJS('express-api');
       const javascript = new JavaScript('business-logic');
       
+      proxy.to(nodeApp);
       nodeApp.to(javascript);
     });
 
