@@ -11,9 +11,12 @@
 
 - ✅ コアクラス: `Diagram`, `Cluster`, `Node`, `Edge`
 - ✅ AWS Computeプロバイダー（実装例）
+- ✅ GCP Computeプロバイダー（Google Cloud Platform）
+- ✅ Azure Computeプロバイダー（Microsoft Azure）
+- ✅ K8s Computeプロバイダー（Kubernetes）
 - ✅ CLIツール
 - ✅ TypeScript型定義
-- ⏳ 追加のクラウドプロバイダー（進行中）
+- ⏳ 追加のサービスタイプ（進行中）
 - ⏳ 完全なテストスイート（進行中）
 
 ## インストール
@@ -82,6 +85,57 @@ node1.forward(node2);  // >> に相当
 node1.to(node2);       // - に相当
 ```
 
+### マルチクラウド対応
+
+複数のクラウドプロバイダーを組み合わせて使用できます：
+
+```typescript
+import { Diagram, Cluster } from './src';
+import { EC2, Lambda } from './src/aws/compute';
+import { GCE, GKE } from './src/gcp/compute';
+import { VM, AKS } from './src/azure/compute';
+import { Pod, Deployment } from './src/k8s/compute';
+
+async function main() {
+  const diagram = new Diagram({ name: 'Multi-Cloud', show: false });
+  
+  await diagram.use(async () => {
+    // AWSクラスター
+    const awsCluster = new Cluster({ label: 'AWS' });
+    await awsCluster.use(async () => {
+      const ec2 = new EC2('web-server');
+      const lambda = new Lambda('api');
+      ec2.to(lambda);
+    });
+    
+    // GCPクラスター
+    const gcpCluster = new Cluster({ label: 'GCP' });
+    await gcpCluster.use(async () => {
+      const gce = new GCE('instance');
+      const gke = new GKE('cluster');
+      gce.to(gke);
+    });
+    
+    // Azureクラスター
+    const azureCluster = new Cluster({ label: 'Azure' });
+    await azureCluster.use(async () => {
+      const vm = new VM('vm');
+      const aks = new AKS('k8s');
+      vm.to(aks);
+    });
+  });
+}
+
+main();
+```
+
+## サポートされているプロバイダー
+
+- **AWS**: EC2, Lambda, ECS, EKSなど
+- **GCP**: Compute Engine, Kubernetes Engine, Cloud Runなど
+- **Azure**: VM, AKS, Container Registriesなど
+- **Kubernetes**: Pod, Deployment, StatefulSetなど
+
 ## プロジェクト構造
 
 ```
@@ -89,9 +143,18 @@ diagrams/
 ├── src/                    # TypeScriptソースファイル
 │   ├── index.ts           # コアクラス（Diagram, Cluster, Node, Edge）
 │   ├── cli.ts             # コマンドラインインターフェース
-│   └── aws/               # AWSプロバイダーモジュール
-│       ├── index.ts       # AWSベースクラス
-│       └── compute.ts     # AWS Computeサービス
+│   ├── aws/               # AWSプロバイダーモジュール
+│   │   ├── index.ts       # AWSベースクラス
+│   │   └── compute.ts     # AWS Computeサービス
+│   ├── gcp/               # GCPプロバイダーモジュール
+│   │   ├── index.ts       # GCPベースクラス
+│   │   └── compute.ts     # GCP Computeサービス
+│   ├── azure/             # Azureプロバイダーモジュール
+│   │   ├── index.ts       # Azureベースクラス
+│   │   └── compute.ts     # Azure Computeサービス
+│   └── k8s/               # K8sプロバイダーモジュール
+│       ├── index.ts       # K8sベースクラス
+│       └── compute.ts     # K8s Computeサービス
 ├── dist/                  # コンパイルされたJavaScript出力
 ├── package.json           # NPMパッケージ設定
 ├── tsconfig.json          # TypeScriptコンパイラ設定
@@ -157,7 +220,8 @@ npm run format:check
 
 ## ロードマップ
 
-- [ ] すべてのクラウドプロバイダーモジュールを完成（Azure、GCP、K8sなど）
+- [x] コアクラウドプロバイダーモジュールを追加（AWS、GCP、Azure、K8s）
+- [ ] すべてのサービスタイプを各プロバイダーに追加
 - [ ] すべてのノードタイプとアイコンを移植
 - [ ] 包括的なテストスイートを追加
 - [ ] サンプルギャラリーを追加
