@@ -1,23 +1,13 @@
-/**
- * AWS Example: Event Processing
- * 
- * An event processing architecture using EKS as source, ECS workers,
- * SQS queue, Lambda processors, S3 storage, and Redshift analytics.
- * 
- * This is the TypeScript version of the Python example from:
- * https://diagrams.mingrammer.com/docs/getting-started/examples
- */
+const { Diagram, Cluster } = require('./dist/index.js');
+const { ECS, EKS, Lambda } = require('./dist/aws/compute.js');
+const { Redshift } = require('./dist/aws/database.js');
+const { SQS } = require('./dist/aws/integration.js');
+const { S3 } = require('./dist/aws/storage.js');
 
-import { Diagram, Cluster } from '../../../src';
-import { ECS, EKS, Lambda } from '../../../src/aws/compute';
-import { Redshift } from '../../../src/aws/database';
-import { SQS } from '../../../src/aws/integration';
-import { S3 } from '../../../src/aws/storage';
-
-async function createEventProcessingDiagram() {
+(async () => {
   const diagram = new Diagram({
     name: 'Event Processing',
-    filename: 'aws_event_processing',
+    filename: '/tmp/aws_event_processing_with_arrows',
     show: false,
     outformat: 'png',
   });
@@ -25,14 +15,12 @@ async function createEventProcessingDiagram() {
   await diagram.use(async () => {
     const source = new EKS('k8s source');
 
-    // Variables to hold references to workers, queue, and handlers
-    let workers: ECS[] = [];
-    let queue: SQS;
-    let handlers: Lambda[] = [];
+    let workers = [];
+    let queue;
+    let handlers = [];
 
     const eventFlowsCluster = new Cluster({ label: 'Event Flows' });
     await eventFlowsCluster.use(async () => {
-      // Event Workers cluster
       const eventWorkersCluster = new Cluster({ label: 'Event Workers' });
       await eventWorkersCluster.use(async () => {
         workers = [
@@ -44,7 +32,6 @@ async function createEventProcessingDiagram() {
 
       queue = new SQS('event queue');
 
-      // Processing cluster
       const processingCluster = new Cluster({ label: 'Processing' });
       await processingCluster.use(async () => {
         handlers = [
@@ -58,16 +45,9 @@ async function createEventProcessingDiagram() {
     const store = new S3('events store');
     const dw = new Redshift('analytics');
 
-    // Connect source to all workers
     workers.forEach(worker => source.forward(worker));
-    
-    // Connect all workers to queue
     workers.forEach(worker => worker.forward(queue));
-    
-    // Connect queue to all handlers
     handlers.forEach(handler => queue.forward(handler));
-    
-    // Connect all handlers to store and analytics
     handlers.forEach(handler => {
       handler.forward(store);
       handler.forward(dw);
@@ -75,7 +55,4 @@ async function createEventProcessingDiagram() {
   });
 
   console.log('Event Processing diagram created!');
-  console.log('Output: aws_event_processing.png');
-}
-
-createEventProcessingDiagram().catch(console.error);
+})().catch(console.error);
