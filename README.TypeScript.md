@@ -108,7 +108,26 @@ This will compile TypeScript files to JavaScript in the `dist/` directory.
 ## Testing
 
 ```bash
+# Run tests once
 npm test
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+## Linting and Formatting
+
+The project uses modern Rust-based tools for fast linting and formatting:
+
+```bash
+# Lint code with oxlint
+npm run lint
+
+# Format code with oxfmt
+npm run format
+
+# Check formatting without modifying files
+npm run format:check
 ```
 
 ## CLI Usage
@@ -118,6 +137,15 @@ After building:
 ```bash
 ./dist/cli.js my-diagram.js
 ```
+
+## Development Tools
+
+This project uses high-performance modern tooling:
+
+- **@typescript/native-preview**: Native TypeScript compiler for faster builds
+- **vitest**: Fast unit testing framework powered by Vite
+- **oxlint**: Blazing fast linter written in Rust
+- **oxfmt**: Fast code formatter written in Rust
 
 ## Differences from Python Version
 
@@ -257,7 +285,26 @@ npm run build
 ## テスト
 
 ```bash
+# テストを一度実行
 npm test
+
+# ウォッチモードでテストを実行
+npm run test:watch
+```
+
+## リントとフォーマット
+
+このプロジェクトは高速なRustベースのツールを使用しています：
+
+```bash
+# oxlintでコードをリント
+npm run lint
+
+# oxfmtでコードをフォーマット
+npm run format
+
+# ファイルを変更せずにフォーマットをチェック
+npm run format:check
 ```
 
 ## CLIの使用
@@ -267,6 +314,15 @@ npm test
 ```bash
 ./dist/cli.js my-diagram.js
 ```
+
+## 開発ツール
+
+このプロジェクトは高性能なモダンツールを使用しています：
+
+- **@typescript/native-preview**: より高速なビルドのためのネイティブTypeScriptコンパイラ
+- **vitest**: Viteを基盤とした高速なユニットテストフレームワーク
+- **oxlint**: Rustで書かれた超高速リンター
+- **oxfmt**: Rustで書かれた高速コードフォーマッター
 
 ## Python版との違い
 

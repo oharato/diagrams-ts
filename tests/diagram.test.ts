@@ -1,12 +1,13 @@
+import { describe, test, expect, vi } from 'vitest';
 import { Diagram, Cluster, Node, Edge } from '../src';
 
 // Mock ts-graphviz to avoid ES module issues in tests
-jest.mock('ts-graphviz', () => ({
-  digraph: jest.fn(() => ({
-    node: jest.fn(),
-    edge: jest.fn(),
+vi.mock('ts-graphviz', () => ({
+  digraph: vi.fn(() => ({
+    node: vi.fn(),
+    edge: vi.fn(),
   })),
-  toDot: jest.fn(() => 'digraph {}'),
+  toDot: vi.fn(() => 'digraph {}'),
 }));
 
 describe('Diagram', () => {
