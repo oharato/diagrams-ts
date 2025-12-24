@@ -1,5 +1,14 @@
 import { Diagram, Cluster, Node, Edge } from '../src';
 
+// Mock ts-graphviz to avoid ES module issues in tests
+jest.mock('ts-graphviz', () => ({
+  digraph: jest.fn(() => ({
+    node: jest.fn(),
+    edge: jest.fn(),
+  })),
+  toDot: jest.fn(() => 'digraph {}'),
+}));
+
 describe('Diagram', () => {
   test('should create a diagram with default options', () => {
     const diagram = new Diagram();
