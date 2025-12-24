@@ -97,13 +97,17 @@ async function main() {
     web.forward(userdb);
     userdb.forward(store);
     
-    lb.forward(web);
-    web.forward(userdb);
-    stat.forward(userdb);
+    const web2 = new EC2('web');
+    const userdb2 = new RDS('userdb');
+    lb.forward(web2);
+    web2.forward(userdb2);
+    userdb2.reverse(stat);
     
-    lb.forward(web);
-    web.to(web);
-    web.forward(userdb);
+    const web3 = new EC2('web');
+    const userdb3 = new RDS('userdb');
+    lb.forward(web3);
+    web3.to(web3);
+    web3.forward(userdb3);
   });
 }
 

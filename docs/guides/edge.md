@@ -78,7 +78,9 @@ async function main() {
     aggregator.connect(kafka, new Edge({ label: 'parse' }));
     kafka.connect(analytics, new Edge({ color: 'black', style: 'bold' }));
     
-    ingress.connect(grpcsvc[0], new Edge({ color: 'darkgreen' }));
+    // The original Python code has bidirectional edge: ingress >> Edge() << grpcsvc
+    // This connects ingress to grpcsvc with the edge, then grpcsvc connects back
+    grpcsvc[0].connect(ingress, new Edge({ color: 'darkgreen' }));
     grpcsvc.forEach(svc => 
       svc.connect(aggregator, new Edge({ color: 'darkorange' }))
     );
