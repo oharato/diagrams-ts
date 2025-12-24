@@ -11,59 +11,81 @@ title: Edges
 
 An edge object contains three attributes: **label**, **color**, and **style**. They mirror the corresponding Graphviz edge attributes.
 
-```python
-from diagrams import Cluster, Diagram, Edge
-from diagrams.onprem.analytics import Spark
-from diagrams.onprem.compute import Server
-from diagrams.onprem.database import PostgreSQL
-from diagrams.onprem.inmemory import Redis
-from diagrams.onprem.aggregator import Fluentd
-from diagrams.onprem.monitoring import Grafana, Prometheus
-from diagrams.onprem.network import Nginx
-from diagrams.onprem.queue import Kafka
+```typescript
+import { Cluster, Diagram, Edge } from 'diagrams-ts';
+import { Spark } from 'diagrams-ts/onprem/analytics';
+import { Server } from 'diagrams-ts/onprem/compute';
+import { PostgreSQL } from 'diagrams-ts/onprem/database';
+import { Redis } from 'diagrams-ts/onprem/inmemory';
+import { Fluentd } from 'diagrams-ts/onprem/aggregator';
+import { Grafana, Prometheus } from 'diagrams-ts/onprem/monitoring';
+import { Nginx } from 'diagrams-ts/onprem/network';
+import { Kafka } from 'diagrams-ts/onprem/queue';
 
-with Diagram(name="Advanced Web Service with On-Premises (colored)", show=False):
-    ingress = Nginx("ingress")
+async function main() {
+  const diagram = new Diagram({ 
+    name: 'Advanced Web Service with On-Premises (colored)', 
+    show: false 
+  });
+  
+  await diagram.use(async () => {
+    const ingress = new Nginx('ingress');
+    
+    const metrics = new Prometheus('metric');
+    const monitoring = new Grafana('monitoring');
+    monitoring.connect(metrics, new Edge({ color: 'firebrick', style: 'dashed' }));
+    
+    const grpcsvc: Server[] = [];
+    const serviceCluster = new Cluster({ label: 'Service Cluster' });
+    await serviceCluster.use(async () => {
+      grpcsvc.push(
+        new Server('grpc1'),
+        new Server('grpc2'),
+        new Server('grpc3')
+      );
+    });
+    
+    let primarySession: Redis;
+    const sessionsCluster = new Cluster({ label: 'Sessions HA' });
+    await sessionsCluster.use(async () => {
+      primarySession = new Redis('session');
+      const replica = new Redis('replica');
+      
+      primarySession.connect(replica, new Edge({ color: 'brown', style: 'dashed' }));
+      replica.connect(metrics, new Edge({ label: 'collect' }));
+    });
+    grpcsvc.forEach(svc => 
+      svc.connect(primarySession, new Edge({ color: 'brown' }))
+    );
+    
+    let primaryDb: PostgreSQL;
+    const dbCluster = new Cluster({ label: 'Database HA' });
+    await dbCluster.use(async () => {
+      primaryDb = new PostgreSQL('users');
+      const replica = new PostgreSQL('replica');
+      
+      primaryDb.connect(replica, new Edge({ color: 'brown', style: 'dotted' }));
+      replica.connect(metrics, new Edge({ label: 'collect' }));
+    });
+    grpcsvc.forEach(svc => 
+      svc.connect(primaryDb, new Edge({ color: 'black' }))
+    );
+    
+    const aggregator = new Fluentd('logging');
+    const kafka = new Kafka('stream');
+    const analytics = new Spark('analytics');
+    
+    aggregator.connect(kafka, new Edge({ label: 'parse' }));
+    kafka.connect(analytics, new Edge({ color: 'black', style: 'bold' }));
+    
+    ingress.connect(grpcsvc[0], new Edge({ color: 'darkgreen' }));
+    grpcsvc.forEach(svc => 
+      svc.connect(aggregator, new Edge({ color: 'darkorange' }))
+    );
+  });
+}
 
-    metrics = Prometheus("metric")
-    metrics << Edge(color="firebrick", style="dashed") << Grafana("monitoring")
-
-    with Cluster("Service Cluster"):
-        grpcsvc = [
-            Server("grpc1"),
-            Server("grpc2"),
-            Server("grpc3")]
-
-    with Cluster("Sessions HA"):
-        primary = Redis("session")
-        primary \
-            - Edge(color="brown", style="dashed") \
-            - Redis("replica") \
-            << Edge(label="collect") \
-            << metrics
-        grpcsvc >> Edge(color="brown") >> primary
-
-    with Cluster("Database HA"):
-        primary = PostgreSQL("users")
-        primary \
-            - Edge(color="brown", style="dotted") \
-            - PostgreSQL("replica") \
-            << Edge(label="collect") \
-            << metrics
-        grpcsvc >> Edge(color="black") >> primary
-
-    aggregator = Fluentd("logging")
-    aggregator \
-        >> Edge(label="parse") \
-        >> Kafka("stream") \
-        >> Edge(color="black", style="bold") \
-        >> Spark("analytics")
-
-    ingress \
-        >> Edge(color="darkgreen") \
-        << grpcsvc \
-        >> Edge(color="darkorange") \
-        >> aggregator
+main();
 ```
 ![advanced web service with on-premise diagram colored](/img/advanced_web_service_with_on-premise_colored.png)
 
@@ -73,49 +95,84 @@ As you can see on the previous graph the edges can quickly become noisy. Below a
 
 One approach is to get creative with the Node class to create blank placeholders, together with named nodes within Clusters, and then only pointing to single named elements within those Clusters.
 
-Compare the output below to the example output above .
+Compare the output below to the example output above.
 
-```python
-from diagrams import Cluster, Diagram, Node
-from diagrams.onprem.analytics import Spark
-from diagrams.onprem.compute import Server
-from diagrams.onprem.database import PostgreSQL
-from diagrams.onprem.inmemory import Redis
-from diagrams.onprem.aggregator import Fluentd
-from diagrams.onprem.monitoring import Grafana, Prometheus
-from diagrams.onprem.network import Nginx
-from diagrams.onprem.queue import Kafka
+```typescript
+import { Cluster, Diagram, Node } from 'diagrams-ts';
+import { Spark } from 'diagrams-ts/onprem/analytics';
+import { Server } from 'diagrams-ts/onprem/compute';
+import { PostgreSQL } from 'diagrams-ts/onprem/database';
+import { Redis } from 'diagrams-ts/onprem/inmemory';
+import { Fluentd } from 'diagrams-ts/onprem/aggregator';
+import { Grafana, Prometheus } from 'diagrams-ts/onprem/monitoring';
+import { Nginx } from 'diagrams-ts/onprem/network';
+import { Kafka } from 'diagrams-ts/onprem/queue';
 
-with Diagram("\nAdvanced Web Service with On-Premise Less edges", show=False) as diag:
-    ingress = Nginx("ingress")
+async function main() {
+  const diagram = new Diagram({ 
+    name: '\nAdvanced Web Service with On-Premise Less edges', 
+    show: false 
+  });
+  
+  await diagram.use(async () => {
+    const ingress = new Nginx('ingress');
+    
+    let serv1: Server, serv2: Server, serv3: Server;
+    const serviceCluster = new Cluster({ label: 'Service Cluster' });
+    await serviceCluster.use(async () => {
+      serv1 = new Server('grpc1');
+      serv2 = new Server('grpc2');
+      serv3 = new Server('grpc3');
+    });
+    
+    let blankHA: Node, metrics: Prometheus, aggregator: Fluentd;
+    let db: PostgreSQL, sess: Redis;
+    
+    const outerCluster = new Cluster({ label: '' });
+    await outerCluster.use(async () => {
+      blankHA = new Node('', { 
+        shape: 'plaintext', 
+        width: '0', 
+        height: '0' 
+      });
+      
+      metrics = new Prometheus('metric');
+      const monitoring = new Grafana('monitoring');
+      metrics.reverse(monitoring);
+      
+      aggregator = new Fluentd('logging');
+      const kafka = new Kafka('stream');
+      const analytics = new Spark('analytics');
+      
+      blankHA.forward(aggregator);
+      aggregator.forward(kafka);
+      kafka.forward(analytics);
+      
+      const dbCluster = new Cluster({ label: 'Database HA' });
+      await dbCluster.use(async () => {
+        db = new PostgreSQL('users');
+        const dbReplica = new PostgreSQL('replica');
+        db.to(dbReplica);
+        dbReplica.reverse(metrics);
+      });
+      blankHA.forward(db);
+      
+      const sessionsCluster = new Cluster({ label: 'Sessions HA' });
+      await sessionsCluster.use(async () => {
+        sess = new Redis('session');
+        const sessReplica = new Redis('replica');
+        sess.to(sessReplica);
+        sessReplica.reverse(metrics);
+      });
+      blankHA.forward(sess);
+    });
+    
+    ingress.forward(serv2);
+    serv2.forward(blankHA);
+  });
+}
 
-    with Cluster("Service Cluster"):
-        serv1 = Server("grpc1")
-        serv2 = Server("grpc2")
-        serv3 = Server("grpc3")
-
-    with Cluster(""):
-        blankHA = Node("", shape="plaintext", width="0", height="0")
-
-        metrics = Prometheus("metric")
-        metrics << Grafana("monitoring")
-
-        aggregator = Fluentd("logging")
-        blankHA >> aggregator >> Kafka("stream") >> Spark("analytics")
-
-        with Cluster("Database HA"):
-            db = PostgreSQL("users")
-            db - PostgreSQL("replica") << metrics
-            blankHA >> db
-
-        with Cluster("Sessions HA"):
-            sess = Redis("session")
-            sess - Redis("replica") << metrics
-            blankHA >> sess
-
-    ingress >> serv2 >> blankHA
-
-diag
+main();
 ```
 
 ![advanced web service with on-premise less edges](/img/advanced_web_service_with_on-premise_less_edges.png)
@@ -138,58 +195,94 @@ For more information see:
 
 
 
-```python
-from diagrams import Cluster, Diagram, Edge, Node
-from diagrams.onprem.analytics import Spark
-from diagrams.onprem.compute import Server
-from diagrams.onprem.database import PostgreSQL
-from diagrams.onprem.inmemory import Redis
-from diagrams.onprem.aggregator import Fluentd
-from diagrams.onprem.monitoring import Grafana, Prometheus
-from diagrams.onprem.network import Nginx
-from diagrams.onprem.queue import Kafka
+```typescript
+import { Cluster, Diagram, Edge, Node } from 'diagrams-ts';
+import { Spark } from 'diagrams-ts/onprem/analytics';
+import { Server } from 'diagrams-ts/onprem/compute';
+import { PostgreSQL } from 'diagrams-ts/onprem/database';
+import { Redis } from 'diagrams-ts/onprem/inmemory';
+import { Fluentd } from 'diagrams-ts/onprem/aggregator';
+import { Grafana, Prometheus } from 'diagrams-ts/onprem/monitoring';
+import { Nginx } from 'diagrams-ts/onprem/network';
+import { Kafka } from 'diagrams-ts/onprem/queue';
 
-graph_attr = {
-    "concentrate": "true",
-    "splines": "spline",
+async function main() {
+  const graphAttr = {
+    concentrate: 'true',
+    splines: 'spline',
+  };
+  
+  const edgeAttr = {
+    minlen: '3',
+  };
+  
+  const diagram = new Diagram({ 
+    name: '\n\nAdvanced Web Service with On-Premise Merged edges', 
+    show: false,
+    graph_attr: graphAttr,
+    edge_attr: edgeAttr
+  });
+  
+  await diagram.use(async () => {
+    const ingress = new Nginx('ingress');
+    
+    const metrics = new Prometheus('metric');
+    const monitoring = new Grafana('monitoring');
+    monitoring.connect(metrics, new Edge({ minlen: '0' }));
+    
+    const grpsrv: Server[] = [];
+    const serviceCluster = new Cluster({ label: 'Service Cluster' });
+    await serviceCluster.use(async () => {
+      grpsrv.push(
+        new Server('grpc1'),
+        new Server('grpc2'),
+        new Server('grpc3')
+      );
+    });
+    
+    const blank = new Node('', { 
+      shape: 'plaintext', 
+      height: '0.0', 
+      width: '0.0' 
+    });
+    
+    let sess: Redis;
+    const sessionsCluster = new Cluster({ label: 'Sessions HA' });
+    await sessionsCluster.use(async () => {
+      sess = new Redis('session');
+      const replica = new Redis('replica');
+      sess.to(replica);
+      replica.reverse(metrics);
+    });
+    
+    let db: PostgreSQL;
+    const dbCluster = new Cluster({ label: 'Database HA' });
+    await dbCluster.use(async () => {
+      db = new PostgreSQL('users');
+      const replica = new PostgreSQL('replica');
+      db.to(replica);
+      replica.reverse(metrics);
+    });
+    
+    const aggregator = new Fluentd('logging');
+    const kafka = new Kafka('stream');
+    const analytics = new Spark('analytics');
+    
+    aggregator.forward(kafka);
+    kafka.forward(analytics);
+    
+    ingress.forward([grpsrv[0], grpsrv[1], grpsrv[2]]);
+    
+    [grpsrv[0], grpsrv[1], grpsrv[2]].forEach(srv => 
+      srv.connect(blank, new Edge({ headport: 'w', minlen: '1' }))
+    );
+    
+    blank.connect(sess, new Edge({ headport: 'w', minlen: '2' }));
+    blank.connect(db, new Edge({ headport: 'w', minlen: '2' }));
+    blank.connect(aggregator, new Edge({ headport: 'w', minlen: '2' }));
+  });
 }
 
-edge_attr = {
-    "minlen":"3",
-}
-
-with Diagram("\n\nAdvanced Web Service with On-Premise Merged edges", show=False,
-            graph_attr=graph_attr,
-            edge_attr=edge_attr) as diag:
-
-    ingress = Nginx("ingress")
-
-    metrics = Prometheus("metric")
-    metrics << Edge(minlen="0") << Grafana("monitoring")
-
-    with Cluster("Service Cluster"):
-        grpsrv = [
-            Server("grpc1"),
-            Server("grpc2"),
-            Server("grpc3")]
-
-    blank = Node("", shape="plaintext", height="0.0", width="0.0")
-
-    with Cluster("Sessions HA"):
-        sess = Redis("session")
-        sess - Redis("replica") << metrics
-
-    with Cluster("Database HA"):
-        db = PostgreSQL("users")
-        db - PostgreSQL("replica") << metrics
-
-    aggregator = Fluentd("logging")
-    aggregator >> Kafka("stream") >> Spark("analytics")
-
-    ingress >> [grpsrv[0], grpsrv[1], grpsrv[2],]
-    [grpsrv[0], grpsrv[1], grpsrv[2],] - Edge(headport="w", minlen="1") - blank
-    blank >> Edge(headport="w", minlen="2") >> [sess, db, aggregator]
-
-diag
+main();
 ```
 ![advanced web service with on-premise merged edges](/img/advanced_web_service_with_on-premise_merged_edges.png)
