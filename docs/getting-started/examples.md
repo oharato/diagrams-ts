@@ -405,7 +405,8 @@ async function main() {
     
     const metrics = new Prometheus('metric');
     const monitoring = new Grafana('monitoring');
-    monitoring.connect(metrics, new Edge({ color: 'firebrick', style: 'dashed' }));
+    // Python: metrics << Grafana('monitoring') means monitoring forwards to metrics
+    monitoring.forward(metrics);
     
     const grpcsvc: Server[] = [];
     const serviceCluster = new Cluster({ label: 'Service Cluster' });
@@ -447,8 +448,8 @@ async function main() {
     aggregator.connect(kafka, new Edge({ label: 'parse' }));
     kafka.connect(analytics, new Edge({ color: 'black', style: 'bold' }));
     
-    // The original Python code has bidirectional edge: ingress >> Edge() << grpcsvc
-    grpcsvc[0].connect(ingress, new Edge({ color: 'darkgreen' }));
+    // Python: ingress >> Edge() << grpcsvc means ingress connects forward to grpcsvc with edge
+    ingress.connect(grpcsvc[0], new Edge({ color: 'darkgreen' }));
     grpcsvc.forEach(svc => 
       svc.connect(aggregator, new Edge({ color: 'darkorange' }))
     );

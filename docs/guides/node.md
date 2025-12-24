@@ -103,11 +103,14 @@ async function main() {
     web2.forward(userdb2);
     userdb2.reverse(stat);
     
-    const web3 = new EC2('web');
+    // The Python code shows: (ELB('lb') >> EC2('web')) - EC2('web') >> RDS('userdb')
+    // This creates two web nodes, one connects undirected, then connects forward to userdb
+    const web3a = new EC2('web');
+    const web3b = new EC2('web');
     const userdb3 = new RDS('userdb');
-    lb.forward(web3);
-    web3.to(web3);
-    web3.forward(userdb3);
+    lb.forward(web3a);
+    web3a.to(web3b);
+    web3b.forward(userdb3);
   });
 }
 
