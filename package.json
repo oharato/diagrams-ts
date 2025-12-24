@@ -1,0 +1,40 @@
+{
+  "name": "diagrams-ts",
+  "version": "0.1.0",
+  "description": "Diagram as Code - TypeScript Edition",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "diagrams-ts": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "oxlint src tests",
+    "format": "oxfmt src tests",
+    "format:check": "oxfmt --check src tests",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "diagrams",
+    "diagram-as-code",
+    "cloud-architecture",
+    "infrastructure",
+    "graphviz"
+  ],
+  "author": "mingrammer",
+  "license": "MIT",
+  "dependencies": {
+    "ts-graphviz": "^3.0.0",
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript/native-preview": "latest",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0",
+    "oxlint": "^1.35.0",
+    "oxfmt": "^0.20.0"
+  }
+}

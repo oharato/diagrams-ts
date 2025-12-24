@@ -19,6 +19,15 @@ Diagrams lets you draw the cloud system architecture **in Python code**. It was 
 
 >  NOTE: It does not control any actual cloud resources nor does it generate cloud formation or terraform code. It is just for drawing the cloud system architecture diagrams.
 
+## TypeScript Port Available! 🎉
+
+A **TypeScript/JavaScript port** of the core library is now available in this repository. See [README.TypeScript.md](README.TypeScript.md) for details.
+
+- TypeScript type definitions for better IDE support  
+- ES6/CommonJS module support
+- Compatible API design with the Python version
+- AWS provider example included
+
 ## Providers
 
 ![aws provider](https://img.shields.io/badge/AWS-orange?logo=amazon-aws&color=ff9900)
