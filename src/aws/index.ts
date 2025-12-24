@@ -11,7 +11,7 @@ export class AWSNode extends Node {
   // AWS-specific styling
   constructor(label: string = '', options: any = {}) {
     super(label, {
-      fontcolor: '#ffffff',
+      fontcolor: '#2D3436',
       ...options
     });
   }

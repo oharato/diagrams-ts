@@ -237,7 +237,7 @@ export class Node {
   protected static type: string | null = null;
   protected static iconDir: string | null = null;
   protected static icon: string | null = null;
-  protected static height: number = 1.9;
+  protected static height: number = 1.4;
 
   private readonly id: string;
   public label: string;
@@ -274,6 +274,8 @@ export class Node {
           shape: 'none',
           height: String((this.constructor as typeof Node).height + padding),
           image: icon,
+          labelloc: 'b',
+          imagescale: 'true',
         }
       : {};
 
