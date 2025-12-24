@@ -267,9 +267,37 @@ npm run format:check
 - [ ] すべてのサービスタイプを各プロバイダーに追加
 - [ ] すべてのノードタイプとアイコンを移植
 - [ ] 包括的なテストスイートを追加
-- [ ] サンプルギャラリーを追加
+- [x] サンプルギャラリーを追加 - [サンプルギャラリー](examples/gallery/)を参照
 - [ ] graphviz統合を改善
 - [ ] ドキュメントサイトを追加
+
+## サンプルギャラリー
+
+[examples/gallery/](examples/gallery/) ディレクトリに、AWS、プログラミング、オンプレミスの各カテゴリーのサンプル例があります（合計16例）：
+
+### AWS Examples
+- Serverless Web Application
+- Microservices Architecture
+- Data Pipeline
+- ML Training Pipeline
+- Containerized Application
+- Event Processing
+
+### Programming Examples
+- Web Application Stack
+- API Gateway Pattern
+- Microservices with Message Queue
+- Event-Driven Architecture
+- Full Stack Application
+
+### On-Premises Examples
+- Traditional Three-Tier Architecture
+- High Availability Web Service
+- Data Analytics Platform
+- Monitoring Stack
+- Message Queue System
+
+詳細とサンプル画像は [examples/gallery/README.md](examples/gallery/README.md) をご覧ください。
 
 ## オリジナルプロジェクト
 
