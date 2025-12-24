@@ -28,6 +28,10 @@ This directory contains various architecture diagram examples using the diagrams
    - コンテナ化されたアプリケーション
    - ECS, ECR, RDS, ELB, S3, SQS, SNS を使用
 
+6. **Event Processing** (`aws/event_processing.ts`)
+   - イベント処理アーキテクチャ
+   - EKS, ECS, SQS, Lambda, S3, Redshift を使用
+
 ### Programming (プログラミング)
 
 1. **Web Application Stack** (`programming/web_app_stack.ts`)
@@ -89,6 +93,9 @@ Some sample images are available in the `images/` directory.
 
 ### On-Premises Three-Tier Architecture
 ![OnPrem Three-Tier](images/onprem_three_tier.png)
+
+### AWS Event Processing
+![AWS Event Processing](images/aws_event_processing.png)
 
 ## 使い方 / Usage
 

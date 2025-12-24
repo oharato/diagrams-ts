@@ -273,7 +273,7 @@ npm run format:check
 
 ## サンプルギャラリー
 
-[examples/gallery/](examples/gallery/) ディレクトリに、AWS、プログラミング、オンプレミスの各カテゴリーで5つずつ、合計15のサンプル例があります：
+[examples/gallery/](examples/gallery/) ディレクトリに、AWS、プログラミング、オンプレミスの各カテゴリーのサンプル例があります（合計16例）：
 
 ### AWS Examples
 - Serverless Web Application
@@ -281,6 +281,7 @@ npm run format:check
 - Data Pipeline
 - ML Training Pipeline
 - Containerized Application
+- Event Processing
 
 ### Programming Examples
 - Web Application Stack

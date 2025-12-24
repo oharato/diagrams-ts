@@ -165,7 +165,7 @@ This project uses high-performance modern tooling:
 
 ## Sample Gallery
 
-The [examples/gallery/](examples/gallery/) directory contains 15 sample examples across AWS, Programming, and On-Premises categories (5 each):
+The [examples/gallery/](examples/gallery/) directory contains sample examples across AWS, Programming, and On-Premises categories (16 total):
 
 ### AWS Examples
 - Serverless Web Application
@@ -173,6 +173,7 @@ The [examples/gallery/](examples/gallery/) directory contains 15 sample examples
 - Data Pipeline
 - ML Training Pipeline
 - Containerized Application
+- Event Processing
 
 ### Programming Examples
 - Web Application Stack
