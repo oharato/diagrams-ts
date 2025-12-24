@@ -1,11 +1,13 @@
 import { randomBytes } from 'crypto';
 import { digraph, toDot } from 'ts-graphviz';
+import type { RootGraphModel, SubgraphModel } from 'ts-graphviz';
 import * as path from 'path';
 import * as fs from 'fs';
 
 // Global contexts for diagrams and clusters
 let currentDiagram: Diagram | null = null;
 let currentCluster: Cluster | null = null;
+let currentSubgraph: RootGraphModel | SubgraphModel | null = null;
 
 export function getDiagram(): Diagram | null {
   return currentDiagram;
@@ -21,6 +23,14 @@ export function getCluster(): Cluster | null {
 
 export function setCluster(cluster: Cluster | null): void {
   currentCluster = cluster;
+}
+
+export function getSubgraph(): RootGraphModel | SubgraphModel | null {
+  return currentSubgraph;
+}
+
+export function setSubgraph(subgraph: RootGraphModel | SubgraphModel | null): void {
+  currentSubgraph = subgraph;
 }
 
 type Direction = 'TB' | 'BT' | 'LR' | 'RL';
@@ -116,6 +126,9 @@ export class Diagram {
     
     // Set graph direction (rankdir)
     this.dot.set('rankdir', this._direction);
+    
+    // Initialize subgraph context to the root graph
+    setSubgraph(this.dot);
 
     this.show = show;
     this.autolabel = autolabel;
@@ -186,12 +199,13 @@ export class Cluster {
   public readonly depth: number;
   private readonly diagram: Diagram;
   private readonly parent: Cluster | null;
+  private clusterSubgraph: SubgraphModel | null = null;
 
   constructor(options: ClusterOptions = {}) {
     const { label = 'cluster', direction = 'LR', graph_attr = {} } = options;
 
     this.label = label;
-    this.name = 'cluster_' + this.label;
+    this.name = 'cluster_' + this.label.replace(/\s+/g, '_');
 
     if (!this.validateDirection(direction)) {
       throw new Error(`"${direction}" is not a valid direction`);
@@ -212,7 +226,12 @@ export class Cluster {
   }
 
   public node(nodeid: string, label: string, attrs: Record<string, string> = {}): void {
-    this.diagram.node(nodeid, label, attrs);
+    const currentSub = getSubgraph();
+    if (currentSub) {
+      currentSub.node(nodeid, { label, ...attrs });
+    } else {
+      this.diagram.node(nodeid, label, attrs);
+    }
   }
 
   public subgraph(cluster: Cluster): void {
@@ -220,12 +239,33 @@ export class Cluster {
   }
 
   public async use<T>(callback: () => Promise<T> | T): Promise<T> {
+    const parentSubgraph = getSubgraph();
+    
+    if (!parentSubgraph) {
+      throw new Error('No parent subgraph context');
+    }
+    
+    // Create a new subgraph for this cluster
+    const bgColor = Cluster.BGCOLORS[this.depth % Cluster.BGCOLORS.length];
+    
+    const sub = parentSubgraph.subgraph(this.name);
+    sub.set('label', this.label);
+    sub.set('style', 'filled,rounded');
+    sub.set('fillcolor', bgColor);
+    sub.set('fontsize', 12);
+    sub.set('fontname', 'Sans-Serif');
+    
+    // Store this subgraph for use by nested nodes
+    this.clusterSubgraph = sub;
+    setSubgraph(sub);
+    
     setCluster(this);
     try {
       const result = await callback();
       return result;
     } finally {
       setCluster(this.parent);
+      setSubgraph(parentSubgraph);
     }
   }
 }
