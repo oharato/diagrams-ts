@@ -280,7 +280,7 @@ export class Node {
   protected static type: string | null = null;
   protected static iconDir: string | null = null;
   protected static icon: string | null = null;
-  protected static height: number = 1.2;
+  protected static height: number = 1.4;
 
   private readonly id: string;
   public label: string;
@@ -321,6 +321,7 @@ export class Node {
           imagescale: 'true',
           fixedsize: 'true',
           margin: '0.3',
+          fontname: 'Sans-Serif',
         }
       : {};
 
