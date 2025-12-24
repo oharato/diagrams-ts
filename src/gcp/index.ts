@@ -20,3 +20,10 @@ export class GCPNode extends Node {
 export class GCP extends GCPNode {
   protected static icon = 'gcp.png';
 }
+
+// Export all GCP services
+export * from './compute';
+export * from './database';
+export * from './storage';
+export * from './network';
+export * from './security';

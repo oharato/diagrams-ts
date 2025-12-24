@@ -20,3 +20,10 @@ export class AWSNode extends Node {
 export class AWS extends AWSNode {
   protected static icon = 'aws.png';
 }
+
+// Export all AWS services
+export * from './compute';
+export * from './database';
+export * from './storage';
+export * from './network';
+export * from './security';

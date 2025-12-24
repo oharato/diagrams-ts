@@ -20,3 +20,10 @@ export class AzureNode extends Node {
 export class Azure extends AzureNode {
   protected static icon = 'azure.png';
 }
+
+// Export all Azure services
+export * from './compute';
+export * from './database';
+export * from './storage';
+export * from './network';
+export * from './security';
