@@ -156,12 +156,39 @@ This project uses high-performance modern tooling:
 
 ## Roadmap
 
-- [ ] Complete all cloud provider modules (Azure, GCP, K8s, etc.)
+- [x] Complete all cloud provider modules (AWS, Azure, GCP, K8s, etc.)
 - [ ] Port all node types and icons
 - [ ] Add comprehensive test suite
-- [ ] Add example gallery
+- [x] Add example gallery - See [Sample Gallery](examples/gallery/)
 - [ ] Improve graphviz integration
 - [ ] Add documentation site
+
+## Sample Gallery
+
+The [examples/gallery/](examples/gallery/) directory contains 15 sample examples across AWS, Programming, and On-Premises categories (5 each):
+
+### AWS Examples
+- Serverless Web Application
+- Microservices Architecture
+- Data Pipeline
+- ML Training Pipeline
+- Containerized Application
+
+### Programming Examples
+- Web Application Stack
+- API Gateway Pattern
+- Microservices with Message Queue
+- Event-Driven Architecture
+- Full Stack Application
+
+### On-Premises Examples
+- Traditional Three-Tier Architecture
+- High Availability Web Service
+- Data Analytics Platform
+- Monitoring Stack
+- Message Queue System
+
+See [examples/gallery/README.md](examples/gallery/README.md) for details and sample images.
 
 ## Original Project
 
