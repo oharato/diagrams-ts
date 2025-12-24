@@ -26,9 +26,9 @@ async function createEventProcessingDiagram() {
     const source = new EKS('k8s source');
 
     // Variables to hold references to workers, queue, and handlers
-    let workers: ECS[] = [];
-    let queue: SQS;
-    let handlers: Lambda[] = [];
+    let workers: any[] = [];
+    let queue: any;
+    let handlers: any[] = [];
 
     const eventFlowsCluster = new Cluster({ label: 'Event Flows' });
     await eventFlowsCluster.use(async () => {
