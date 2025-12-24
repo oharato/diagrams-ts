@@ -11,7 +11,7 @@ export class AzureNode extends Node {
   // Azure-specific styling
   constructor(label: string = '', options: any = {}) {
     super(label, {
-      fontcolor: '#ffffff',
+      fontcolor: '#2d3436',
       ...options
     });
   }
