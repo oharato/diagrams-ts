@@ -57,7 +57,8 @@ export class Diagram {
   private readonly _node_attr: Record<string, string>;
   private readonly _edge_attr: Record<string, string>;
   
-  public readonly dot: any;  // Simplified type
+  // ts-graphviz digraph instance
+  public readonly dot: ReturnType<typeof digraph>;
 
   constructor(options: DiagramOptions = {}) {
     const {
@@ -118,15 +119,18 @@ export class Diagram {
   }
 
   private validateDirection(direction: string): direction is Direction {
-    return Diagram.DIRECTIONS.includes(direction.toUpperCase() as Direction);
+    const upperDir = direction.toUpperCase();
+    return Diagram.DIRECTIONS.includes(upperDir as Direction);
   }
 
   private validateCurveStyle(curvestyle: string): curvestyle is CurveStyle {
-    return Diagram.CURVESTYLES.includes(curvestyle.toLowerCase() as CurveStyle);
+    const lowerStyle = curvestyle.toLowerCase();
+    return Diagram.CURVESTYLES.includes(lowerStyle as CurveStyle);
   }
 
   private validateOutFormat(outformat: string): outformat is OutFormat {
-    return Diagram.OUTFORMATS.includes(outformat.toLowerCase() as OutFormat);
+    const lowerFormat = outformat.toLowerCase();
+    return Diagram.OUTFORMATS.includes(lowerFormat as OutFormat);
   }
 
   public node(nodeid: string, label: string, attrs: Record<string, string> = {}): void {
