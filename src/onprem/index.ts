@@ -25,3 +25,5 @@ export class OnPrem extends OnPremNode {
 export * from './database';
 export * from './network';
 export * from './compute';
+export * from './monitoring';
+export * from './queue';

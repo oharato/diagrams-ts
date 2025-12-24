@@ -27,3 +27,5 @@ export * from './database';
 export * from './storage';
 export * from './network';
 export * from './security';
+export * from './analytics';
+export * from './ml';
