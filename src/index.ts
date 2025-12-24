@@ -113,6 +113,9 @@ export class Diagram {
     this._edge_attr = edge_attr;
 
     this.dot = digraph(this.name);
+    
+    // Set graph direction (rankdir)
+    this.dot.set('rankdir', this._direction);
 
     this.show = show;
     this.autolabel = autolabel;
