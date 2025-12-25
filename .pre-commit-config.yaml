@@ -16,8 +16,8 @@ repos:
         pass_filenames: true
 
     -   id: oxlint
-        name: oxlint (TypeScript/JavaScript linter - warnings only)
-        entry: bash -c 'npx oxlint "$@" || true' --
+        name: oxlint (TypeScript/JavaScript linter with auto-fix)
+        entry: bash -c 'npx oxlint --fix "$@" || true' --
         language: system
         files: '\.(ts|tsx|js|jsx)$'
         pass_filenames: true

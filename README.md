@@ -245,6 +245,21 @@ npm run format:check
 ./dist/cli.js my-diagram.js
 ```
 
+## サンプル画像の一括生成
+
+`examples/` ディレクトリ以下のすべてのTypeScriptファイルを実行し、図を生成するスクリプトが用意されています：
+
+```bash
+npm run generate-examples
+```
+
+このスクリプトは：
+- `examples/` ディレクトリを再帰的に検索し、すべての `.ts` ファイルを見つけます
+- 各ファイルを実行し、ソースファイルと同じディレクトリに図を生成します
+- 19個のサンプルファイルを処理します（AWS、GCP、Azure、Kubernetes、プログラミング、オンプレミスの例）
+
+詳細は [scripts/README.md](scripts/README.md) を参照してください。
+
 ## 開発ツール
 
 このプロジェクトは高性能なモダンツールを使用しています：
