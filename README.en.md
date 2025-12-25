@@ -32,16 +32,16 @@ import { EC2, Lambda } from './src/aws/compute';
 
 async function main() {
   const diagram = new Diagram({ name: 'Web Service', show: false });
-  
+
   await diagram.use(async () => {
     const cluster = new Cluster({ label: 'Web Tier' });
-    
+
     await cluster.use(async () => {
       const web1 = new EC2('web1');
       const web2 = new EC2('web2');
       const web3 = new EC2('web3');
     });
-    
+
     const lb = new Lambda('Lambda Function');
   });
 }
