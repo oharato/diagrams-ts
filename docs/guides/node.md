@@ -17,7 +17,7 @@ import { EC2 } from 'diagrams-ts/aws/compute';
 
 async function main() {
   const diagram = new Diagram({ name: 'Simple Diagram' });
-  
+
   await diagram.use(async () => {
     new EC2('web');
   });
@@ -85,24 +85,24 @@ import { S3 } from 'diagrams-ts/aws/storage';
 
 async function main() {
   const diagram = new Diagram({ name: 'Web Services', show: false });
-  
+
   await diagram.use(async () => {
     const lb = new ELB('lb');
     const web = new EC2('web');
     const userdb = new RDS('userdb');
     const store = new S3('store');
     const stat = new EC2('stat');
-    
+
     lb.forward(web);
     web.forward(userdb);
     userdb.forward(store);
-    
+
     const web2 = new EC2('web');
     const userdb2 = new RDS('userdb');
     lb.forward(web2);
     web2.forward(userdb2);
     userdb2.reverse(stat);
-    
+
     // The Python code shows: (ELB('lb') >> EC2('web')) - EC2('web') >> RDS('userdb')
     // This creates two web nodes, one connects undirected, then connects forward to userdb
     const web3a = new EC2('web');
@@ -132,34 +132,34 @@ import { RDS } from 'diagrams-ts/aws/database';
 import { ELB } from 'diagrams-ts/aws/network';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Workers', 
-    show: false, 
-    direction: 'TB' 
+  const diagram = new Diagram({
+    name: 'Workers',
+    show: false,
+    direction: 'TB'
   });
-  
+
   await diagram.use(async () => {
     const lb = new ELB('lb');
     const db = new RDS('events');
-    
+
     const worker1 = new EC2('worker1');
     const worker2 = new EC2('worker2');
     const worker3 = new EC2('worker3');
     const worker4 = new EC2('worker4');
     const worker5 = new EC2('worker5');
-    
+
     lb.forward(worker1);
     worker1.forward(db);
-    
+
     lb.forward(worker2);
     worker2.forward(db);
-    
+
     lb.forward(worker3);
     worker3.forward(db);
-    
+
     lb.forward(worker4);
     worker4.forward(db);
-    
+
     lb.forward(worker5);
     worker5.forward(db);
   });
@@ -181,12 +181,12 @@ import { RDS } from 'diagrams-ts/aws/database';
 import { ELB } from 'diagrams-ts/aws/network';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Grouped Workers', 
-    show: false, 
-    direction: 'TB' 
+  const diagram = new Diagram({
+    name: 'Grouped Workers',
+    show: false,
+    direction: 'TB'
   });
-  
+
   await diagram.use(async () => {
     const lb = new ELB('lb');
     const workers = [
@@ -197,7 +197,7 @@ async function main() {
       new EC2('worker5')
     ];
     const events = new RDS('events');
-    
+
     lb.forward(workers);
     workers.forEach(w => w.forward(events));
   });

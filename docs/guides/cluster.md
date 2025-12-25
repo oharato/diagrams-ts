@@ -18,15 +18,15 @@ import { RDS } from 'diagrams-ts/aws/database';
 import { Route53 } from 'diagrams-ts/aws/network';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Simple Web Service with DB Cluster', 
-    show: false 
+  const diagram = new Diagram({
+    name: 'Simple Web Service with DB Cluster',
+    show: false
   });
-  
+
   await diagram.use(async () => {
     const dns = new Route53('dns');
     const web = new ECS('service');
-    
+
     let dbPrimary: RDS;
     const dbCluster = new Cluster({ label: 'DB Cluster' });
     await dbCluster.use(async () => {
@@ -36,7 +36,7 @@ async function main() {
       dbPrimary.to(replica1);
       dbPrimary.to(replica2);
     });
-    
+
     dns.forward(web);
     web.forward(dbPrimary);
   });
@@ -60,14 +60,14 @@ import { S3 } from 'diagrams-ts/aws/storage';
 
 async function main() {
   const diagram = new Diagram({ name: 'Event Processing', show: false });
-  
+
   await diagram.use(async () => {
     const source = new EKS('k8s source');
-    
+
     const workers: ECS[] = [];
     let queue: SQS;
     const handlers: Lambda[] = [];
-    
+
     const eventFlowsCluster = new Cluster({ label: 'Event Flows' });
     await eventFlowsCluster.use(async () => {
       const eventWorkersCluster = new Cluster({ label: 'Event Workers' });
@@ -78,9 +78,9 @@ async function main() {
           new ECS('worker3')
         );
       });
-      
+
       queue = new SQS('event queue');
-      
+
       const processingCluster = new Cluster({ label: 'Processing' });
       await processingCluster.use(async () => {
         handlers.push(
@@ -90,10 +90,10 @@ async function main() {
         );
       });
     });
-    
+
     const store = new S3('events store');
     const dw = new Redshift('analytics');
-    
+
     source.forward(workers);
     workers.forEach(w => w.forward(queue));
     queue.forward(handlers);

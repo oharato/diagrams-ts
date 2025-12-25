@@ -1,5 +1,31 @@
 # Contribution Guide
 
+## Development Setup
+
+### Pre-commit Hooks
+
+This project uses pre-commit hooks to ensure code quality. Before making your first commit:
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Install Git hooks
+pre-commit install
+```
+
+After installation, pre-commit will automatically run checks before each commit. To manually run checks on all files:
+
+```bash
+pre-commit run --all-files
+```
+
+### Environment Setup
+
+- See [DEVELOPMENT][DEVELOPMENT.md]
+
+---
+
 You shouldn't edit the node class files (all files under `diagrams/` directory) by
 yourself.
 

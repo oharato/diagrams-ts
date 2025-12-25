@@ -14,16 +14,16 @@ import { RDS } from 'diagrams-ts/aws/database';
 import { ELB } from 'diagrams-ts/aws/network';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Grouped Workers', 
-    show: false, 
-    direction: 'TB' 
+  const diagram = new Diagram({
+    name: 'Grouped Workers',
+    show: false,
+    direction: 'TB'
   });
-  
+
   await diagram.use(async () => {
     const lb = new ELB('lb');
     const events = new RDS('events');
-    
+
     const workers = [
       new EC2('worker1'),
       new EC2('worker2'),
@@ -31,7 +31,7 @@ async function main() {
       new EC2('worker4'),
       new EC2('worker5')
     ];
-    
+
     lb.forward(workers);
     workers.forEach(w => w.forward(events));
   });
@@ -52,11 +52,11 @@ import { ELB, Route53 } from 'diagrams-ts/aws/network';
 
 async function main() {
   const diagram = new Diagram({ name: 'Clustered Web Services', show: false });
-  
+
   await diagram.use(async () => {
     const dns = new Route53('dns');
     const lb = new ELB('lb');
-    
+
     const svcGroup: ECS[] = [];
     const servicesCluster = new Cluster({ label: 'Services' });
     await servicesCluster.use(async () => {
@@ -66,7 +66,7 @@ async function main() {
         new ECS('web3')
       );
     });
-    
+
     let dbPrimary: RDS;
     const dbCluster = new Cluster({ label: 'DB Cluster' });
     await dbCluster.use(async () => {
@@ -74,9 +74,9 @@ async function main() {
       const dbRo = new RDS('userdb ro');
       dbPrimary.to(dbRo);
     });
-    
+
     const memcached = new ElastiCache('memcached');
-    
+
     dns.forward(lb);
     lb.forward(svcGroup);
     svcGroup.forEach(svc => {
@@ -102,14 +102,14 @@ import { S3 } from 'diagrams-ts/aws/storage';
 
 async function main() {
   const diagram = new Diagram({ name: 'Event Processing', show: false });
-  
+
   await diagram.use(async () => {
     const source = new EKS('k8s source');
-    
+
     const workers: ECS[] = [];
     let queue: SQS;
     const handlers: Lambda[] = [];
-    
+
     const eventFlowsCluster = new Cluster({ label: 'Event Flows' });
     await eventFlowsCluster.use(async () => {
       const eventWorkersCluster = new Cluster({ label: 'Event Workers' });
@@ -120,9 +120,9 @@ async function main() {
           new ECS('worker3')
         );
       });
-      
+
       queue = new SQS('event queue');
-      
+
       const processingCluster = new Cluster({ label: 'Processing' });
       await processingCluster.use(async () => {
         handlers.push(
@@ -132,10 +132,10 @@ async function main() {
         );
       });
     });
-    
+
     const store = new S3('events store');
     const dw = new Redshift('analytics');
-    
+
     source.forward(workers);
     workers.forEach(w => w.forward(queue));
     queue.forward(handlers);
@@ -163,10 +163,10 @@ import { GCS } from 'diagrams-ts/gcp/storage';
 
 async function main() {
   const diagram = new Diagram({ name: 'Message Collecting', show: false });
-  
+
   await diagram.use(async () => {
     const pubsub = new PubSub('pubsub');
-    
+
     const sourceCluster = new Cluster({ label: 'Source of Data' });
     await sourceCluster.use(async () => {
       const sources = [
@@ -176,7 +176,7 @@ async function main() {
       ];
       sources.forEach(s => s.forward(pubsub));
     });
-    
+
     let flow: Dataflow;
     const targetsCluster = new Cluster({ label: 'Targets' });
     await targetsCluster.use(async () => {
@@ -184,14 +184,14 @@ async function main() {
       await dataFlowCluster.use(async () => {
         flow = new Dataflow('data flow');
       });
-      
+
       const dataLakeCluster = new Cluster({ label: 'Data Lake' });
       await dataLakeCluster.use(async () => {
         const bq = new BigQuery('bq');
         const storage = new GCS('storage');
         flow.forward([bq, storage]);
       });
-      
+
       const eventDrivenCluster = new Cluster({ label: 'Event Driven' });
       await eventDrivenCluster.use(async () => {
         const processingCluster = new Cluster({ label: 'Processing' });
@@ -201,7 +201,7 @@ async function main() {
           flow.forward(engine);
           engine.forward(bigtable);
         });
-        
+
         const serverlessCluster = new Cluster({ label: 'Serverless' });
         await serverlessCluster.use(async () => {
           const func = new Functions('func');
@@ -211,7 +211,7 @@ async function main() {
         });
       });
     });
-    
+
     pubsub.forward(flow);
   });
 }
@@ -230,11 +230,11 @@ import { Deployment, Pod, ReplicaSet } from 'diagrams-ts/k8s/compute';
 import { Ingress, Service } from 'diagrams-ts/k8s/network';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Exposed Pod with 3 Replicas', 
-    show: false 
+  const diagram = new Diagram({
+    name: 'Exposed Pod with 3 Replicas',
+    show: false
   });
-  
+
   await diagram.use(async () => {
     const ingress = new Ingress('domain.com');
     const svc = new Service('svc');
@@ -246,7 +246,7 @@ async function main() {
     const rs = new ReplicaSet('rs');
     const dp = new Deployment('dp');
     const hpa = new HPA('hpa');
-    
+
     ingress.forward(svc);
     svc.forward(pods);
     pods.forEach(p => p.reverse(rs));
@@ -270,35 +270,35 @@ import { PV, PVC, StorageClass } from 'diagrams-ts/k8s/storage';
 
 async function main() {
   const diagram = new Diagram({ name: 'Stateful Architecture', show: false });
-  
+
   await diagram.use(async () => {
     let svc: Service;
     let sts: StatefulSet;
     const apps: Pod[] = [];
     const pvcs: PVC[] = [];
-    
+
     const appsCluster = new Cluster({ label: 'Apps' });
     await appsCluster.use(async () => {
       svc = new Service('svc');
       sts = new StatefulSet('sts');
-      
+
       for (let i = 0; i < 3; i++) {
         const pod = new Pod('pod');
         const pvc = new PVC('pvc');
-        
+
         svc.forward(pod);
         pod.to(sts);
         sts.to(pvc);
         pod.forward(pvc);
-        
+
         apps.push(pod);
         pvcs.push(pvc);
       }
     });
-    
+
     const pv = new PV('pv');
     const sc = new StorageClass('sc');
-    
+
     pvcs.forEach(pvc => pvc.reverse(pv));
     pv.reverse(sc);
   });
@@ -323,18 +323,18 @@ import { Nginx } from 'diagrams-ts/onprem/network';
 import { Kafka } from 'diagrams-ts/onprem/queue';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Advanced Web Service with On-Premises', 
-    show: false 
+  const diagram = new Diagram({
+    name: 'Advanced Web Service with On-Premises',
+    show: false
   });
-  
+
   await diagram.use(async () => {
     const ingress = new Nginx('ingress');
-    
+
     const metrics = new Prometheus('metric');
     const monitoring = new Grafana('monitoring');
     monitoring.forward(metrics);
-    
+
     const grpcsvc: Server[] = [];
     const serviceCluster = new Cluster({ label: 'Service Cluster' });
     await serviceCluster.use(async () => {
@@ -344,7 +344,7 @@ async function main() {
         new Server('grpc3')
       );
     });
-    
+
     let primarySession: Redis;
     const sessionsCluster = new Cluster({ label: 'Sessions HA' });
     await sessionsCluster.use(async () => {
@@ -354,7 +354,7 @@ async function main() {
       replica.forward(metrics);
     });
     grpcsvc.forEach(svc => svc.forward(primarySession));
-    
+
     let primaryDb: PostgreSQL;
     const dbCluster = new Cluster({ label: 'Database HA' });
     await dbCluster.use(async () => {
@@ -364,13 +364,13 @@ async function main() {
       replica.forward(metrics);
     });
     grpcsvc.forEach(svc => svc.forward(primaryDb));
-    
+
     const aggregator = new Fluentd('logging');
     const kafka = new Kafka('stream');
     const analytics = new Spark('analytics');
     aggregator.forward(kafka);
     kafka.forward(analytics);
-    
+
     ingress.forward(grpcsvc);
     grpcsvc.forEach(svc => svc.forward(aggregator));
   });
@@ -395,19 +395,19 @@ import { Nginx } from 'diagrams-ts/onprem/network';
 import { Kafka } from 'diagrams-ts/onprem/queue';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Advanced Web Service with On-Premises (colored)', 
-    show: false 
+  const diagram = new Diagram({
+    name: 'Advanced Web Service with On-Premises (colored)',
+    show: false
   });
-  
+
   await diagram.use(async () => {
     const ingress = new Nginx('ingress');
-    
+
     const metrics = new Prometheus('metric');
     const monitoring = new Grafana('monitoring');
     // Python: metrics << Grafana('monitoring') means monitoring forwards to metrics
     monitoring.forward(metrics);
-    
+
     const grpcsvc: Server[] = [];
     const serviceCluster = new Cluster({ label: 'Service Cluster' });
     await serviceCluster.use(async () => {
@@ -417,7 +417,7 @@ async function main() {
         new Server('grpc3')
       );
     });
-    
+
     let primarySession: Redis;
     const sessionsCluster = new Cluster({ label: 'Sessions HA' });
     await sessionsCluster.use(async () => {
@@ -426,10 +426,10 @@ async function main() {
       primarySession.connect(replica, new Edge({ color: 'brown', style: 'dashed' }));
       replica.connect(metrics, new Edge({ label: 'collect' }));
     });
-    grpcsvc.forEach(svc => 
+    grpcsvc.forEach(svc =>
       svc.connect(primarySession, new Edge({ color: 'brown' }))
     );
-    
+
     let primaryDb: PostgreSQL;
     const dbCluster = new Cluster({ label: 'Database HA' });
     await dbCluster.use(async () => {
@@ -438,19 +438,19 @@ async function main() {
       primaryDb.connect(replica, new Edge({ color: 'brown', style: 'dotted' }));
       replica.connect(metrics, new Edge({ label: 'collect' }));
     });
-    grpcsvc.forEach(svc => 
+    grpcsvc.forEach(svc =>
       svc.connect(primaryDb, new Edge({ color: 'black' }))
     );
-    
+
     const aggregator = new Fluentd('logging');
     const kafka = new Kafka('stream');
     const analytics = new Spark('analytics');
     aggregator.connect(kafka, new Edge({ label: 'parse' }));
     kafka.connect(analytics, new Edge({ color: 'black', style: 'bold' }));
-    
+
     // Python: ingress >> Edge() << grpcsvc means ingress connects forward to grpcsvc with edge
     ingress.connect(grpcsvc[0], new Edge({ color: 'darkgreen' }));
-    grpcsvc.forEach(svc => 
+    grpcsvc.forEach(svc =>
       svc.connect(aggregator, new Edge({ color: 'darkorange' }))
     );
   });
@@ -493,9 +493,9 @@ async function downloadImage(url: string, dest: string): Promise<void> {
 
 async function main() {
   await downloadImage(rabbitmqUrl, rabbitmqIcon);
-  
+
   const diagram = new Diagram({ name: 'Broker Consumers', show: false });
-  
+
   await diagram.use(async () => {
     const consumers: Pod[] = [];
     const consumersCluster = new Cluster({ label: 'Consumers' });
@@ -506,10 +506,10 @@ async function main() {
         new Pod('worker')
       );
     });
-    
+
     const queue = new Custom('Message queue', rabbitmqIcon);
     const db = new Aurora('Database');
-    
+
     queue.forward(consumers);
     consumers.forEach(c => c.forward(db));
   });

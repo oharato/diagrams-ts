@@ -23,19 +23,19 @@ import { Nginx } from 'diagrams-ts/onprem/network';
 import { Kafka } from 'diagrams-ts/onprem/queue';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Advanced Web Service with On-Premises (colored)', 
-    show: false 
+  const diagram = new Diagram({
+    name: 'Advanced Web Service with On-Premises (colored)',
+    show: false
   });
-  
+
   await diagram.use(async () => {
     const ingress = new Nginx('ingress');
-    
+
     const metrics = new Prometheus('metric');
     const monitoring = new Grafana('monitoring');
     // Python: metrics << Grafana('monitoring') means monitoring forwards to metrics
     monitoring.forward(metrics);
-    
+
     const grpcsvc: Server[] = [];
     const serviceCluster = new Cluster({ label: 'Service Cluster' });
     await serviceCluster.use(async () => {
@@ -45,43 +45,43 @@ async function main() {
         new Server('grpc3')
       );
     });
-    
+
     let primarySession: Redis;
     const sessionsCluster = new Cluster({ label: 'Sessions HA' });
     await sessionsCluster.use(async () => {
       primarySession = new Redis('session');
       const replica = new Redis('replica');
-      
+
       primarySession.connect(replica, new Edge({ color: 'brown', style: 'dashed' }));
       replica.connect(metrics, new Edge({ label: 'collect' }));
     });
-    grpcsvc.forEach(svc => 
+    grpcsvc.forEach(svc =>
       svc.connect(primarySession, new Edge({ color: 'brown' }))
     );
-    
+
     let primaryDb: PostgreSQL;
     const dbCluster = new Cluster({ label: 'Database HA' });
     await dbCluster.use(async () => {
       primaryDb = new PostgreSQL('users');
       const replica = new PostgreSQL('replica');
-      
+
       primaryDb.connect(replica, new Edge({ color: 'brown', style: 'dotted' }));
       replica.connect(metrics, new Edge({ label: 'collect' }));
     });
-    grpcsvc.forEach(svc => 
+    grpcsvc.forEach(svc =>
       svc.connect(primaryDb, new Edge({ color: 'black' }))
     );
-    
+
     const aggregator = new Fluentd('logging');
     const kafka = new Kafka('stream');
     const analytics = new Spark('analytics');
-    
+
     aggregator.connect(kafka, new Edge({ label: 'parse' }));
     kafka.connect(analytics, new Edge({ color: 'black', style: 'bold' }));
-    
+
     // Python: ingress >> Edge() << grpcsvc means ingress connects forward to grpcsvc with edge
     ingress.connect(grpcsvc[0], new Edge({ color: 'darkgreen' }));
-    grpcsvc.forEach(svc => 
+    grpcsvc.forEach(svc =>
       svc.connect(aggregator, new Edge({ color: 'darkorange' }))
     );
   });
@@ -111,14 +111,14 @@ import { Nginx } from 'diagrams-ts/onprem/network';
 import { Kafka } from 'diagrams-ts/onprem/queue';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: '\nAdvanced Web Service with On-Premise Less edges', 
-    show: false 
+  const diagram = new Diagram({
+    name: '\nAdvanced Web Service with On-Premise Less edges',
+    show: false
   });
-  
+
   await diagram.use(async () => {
     const ingress = new Nginx('ingress');
-    
+
     let serv1: Server, serv2: Server, serv3: Server;
     const serviceCluster = new Cluster({ label: 'Service Cluster' });
     await serviceCluster.use(async () => {
@@ -126,30 +126,30 @@ async function main() {
       serv2 = new Server('grpc2');
       serv3 = new Server('grpc3');
     });
-    
+
     let blankHA: Node, metrics: Prometheus, aggregator: Fluentd;
     let db: PostgreSQL, sess: Redis;
-    
+
     const outerCluster = new Cluster({ label: '' });
     await outerCluster.use(async () => {
-      blankHA = new Node('', { 
-        shape: 'plaintext', 
-        width: '0', 
-        height: '0' 
+      blankHA = new Node('', {
+        shape: 'plaintext',
+        width: '0',
+        height: '0'
       });
-      
+
       metrics = new Prometheus('metric');
       const monitoring = new Grafana('monitoring');
       metrics.reverse(monitoring);
-      
+
       aggregator = new Fluentd('logging');
       const kafka = new Kafka('stream');
       const analytics = new Spark('analytics');
-      
+
       blankHA.forward(aggregator);
       aggregator.forward(kafka);
       kafka.forward(analytics);
-      
+
       const dbCluster = new Cluster({ label: 'Database HA' });
       await dbCluster.use(async () => {
         db = new PostgreSQL('users');
@@ -158,7 +158,7 @@ async function main() {
         dbReplica.reverse(metrics);
       });
       blankHA.forward(db);
-      
+
       const sessionsCluster = new Cluster({ label: 'Sessions HA' });
       await sessionsCluster.use(async () => {
         sess = new Redis('session');
@@ -168,7 +168,7 @@ async function main() {
       });
       blankHA.forward(sess);
     });
-    
+
     ingress.forward(serv2);
     serv2.forward(blankHA);
   });
@@ -213,25 +213,25 @@ async function main() {
     concentrate: 'true',
     splines: 'spline',
   };
-  
+
   const edgeAttr = {
     minlen: '3',
   };
-  
-  const diagram = new Diagram({ 
-    name: '\n\nAdvanced Web Service with On-Premise Merged edges', 
+
+  const diagram = new Diagram({
+    name: '\n\nAdvanced Web Service with On-Premise Merged edges',
     show: false,
     graph_attr: graphAttr,
     edge_attr: edgeAttr
   });
-  
+
   await diagram.use(async () => {
     const ingress = new Nginx('ingress');
-    
+
     const metrics = new Prometheus('metric');
     const monitoring = new Grafana('monitoring');
     monitoring.connect(metrics, new Edge({ minlen: '0' }));
-    
+
     const grpsrv: Server[] = [];
     const serviceCluster = new Cluster({ label: 'Service Cluster' });
     await serviceCluster.use(async () => {
@@ -241,13 +241,13 @@ async function main() {
         new Server('grpc3')
       );
     });
-    
-    const blank = new Node('', { 
-      shape: 'plaintext', 
-      height: '0.0', 
-      width: '0.0' 
+
+    const blank = new Node('', {
+      shape: 'plaintext',
+      height: '0.0',
+      width: '0.0'
     });
-    
+
     let sess: Redis;
     const sessionsCluster = new Cluster({ label: 'Sessions HA' });
     await sessionsCluster.use(async () => {
@@ -256,7 +256,7 @@ async function main() {
       sess.to(replica);
       replica.reverse(metrics);
     });
-    
+
     let db: PostgreSQL;
     const dbCluster = new Cluster({ label: 'Database HA' });
     await dbCluster.use(async () => {
@@ -265,20 +265,20 @@ async function main() {
       db.to(replica);
       replica.reverse(metrics);
     });
-    
+
     const aggregator = new Fluentd('logging');
     const kafka = new Kafka('stream');
     const analytics = new Spark('analytics');
-    
+
     aggregator.forward(kafka);
     kafka.forward(analytics);
-    
+
     ingress.forward([grpsrv[0], grpsrv[1], grpsrv[2]]);
-    
-    [grpsrv[0], grpsrv[1], grpsrv[2]].forEach(srv => 
+
+    [grpsrv[0], grpsrv[1], grpsrv[2]].forEach(srv =>
       srv.connect(blank, new Edge({ headport: 'w', minlen: '1' }))
     );
-    
+
     blank.connect(sess, new Edge({ headport: 'w', minlen: '2' }));
     blank.connect(db, new Edge({ headport: 'w', minlen: '2' }));
     blank.connect(aggregator, new Edge({ headport: 'w', minlen: '2' }));

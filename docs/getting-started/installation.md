@@ -33,12 +33,12 @@ import { ELB } from 'diagrams-ts/aws/network';
 
 async function main() {
   const diagram = new Diagram({ name: 'Web Service', show: false });
-  
+
   await diagram.use(async () => {
     const lb = new ELB('lb');
     const web = new EC2('web');
     const userdb = new RDS('userdb');
-    
+
     lb.forward(web);
     web.forward(userdb);
   });

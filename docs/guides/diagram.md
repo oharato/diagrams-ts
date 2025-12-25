@@ -17,7 +17,7 @@ import { EC2 } from 'diagrams-ts/aws/compute';
 
 async function main() {
   const diagram = new Diagram({ name: 'Simple Diagram' });
-  
+
   await diagram.use(async () => {
     new EC2('web');
   });
@@ -49,11 +49,11 @@ import { Diagram } from 'diagrams-ts';
 import { EC2 } from 'diagrams-ts/aws/compute';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Simple Diagram', 
-    outformat: 'jpg' 
+  const diagram = new Diagram({
+    name: 'Simple Diagram',
+    outformat: 'jpg'
   });
-  
+
   await diagram.use(async () => {
     new EC2('web');
   });
@@ -69,11 +69,11 @@ import { Diagram } from 'diagrams-ts';
 import { EC2 } from 'diagrams-ts/aws/compute';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Simple Diagram Multi Output', 
-    outformat: ['jpg', 'png', 'dot'] 
+  const diagram = new Diagram({
+    name: 'Simple Diagram Multi Output',
+    outformat: ['jpg', 'png', 'dot']
   });
-  
+
   await diagram.use(async () => {
     new EC2('web');
   });
@@ -89,11 +89,11 @@ import { Diagram } from 'diagrams-ts';
 import { EC2 } from 'diagrams-ts/aws/compute';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Simple Diagram', 
-    filename: 'my_diagram' 
+  const diagram = new Diagram({
+    name: 'Simple Diagram',
+    filename: 'my_diagram'
   });
-  
+
   await diagram.use(async () => {
     new EC2('web');
   });
@@ -109,11 +109,11 @@ import { Diagram } from 'diagrams-ts';
 import { EC2 } from 'diagrams-ts/aws/compute';
 
 async function main() {
-  const diagram = new Diagram({ 
-    name: 'Simple Diagram', 
-    show: false 
+  const diagram = new Diagram({
+    name: 'Simple Diagram',
+    show: false
   });
-  
+
   await diagram.use(async () => {
     new EC2('web');
   });
@@ -135,13 +135,13 @@ async function main() {
     fontsize: '45',
     bgcolor: 'transparent'
   };
-  
-  const diagram = new Diagram({ 
-    name: 'Simple Diagram', 
-    show: false, 
-    graph_attr: graphAttr 
+
+  const diagram = new Diagram({
+    name: 'Simple Diagram',
+    show: false,
+    graph_attr: graphAttr
   });
-  
+
   await diagram.use(async () => {
     new EC2('web');
   });
