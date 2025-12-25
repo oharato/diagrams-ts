@@ -2,7 +2,7 @@
  * OnPrem Monitoring services
  */
 
-import { OnPremNode } from './index';
+import { OnPremNode } from './base';
 
 class MonitoringNode extends OnPremNode {
   protected static type = 'monitoring';

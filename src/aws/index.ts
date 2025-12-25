@@ -2,20 +2,9 @@
  * AWS provides a set of services for Amazon Web Service provider.
  */
 
-import { Node } from '../index';
+import { AWSNode } from './base';
 
-export class AWSNode extends Node {
-  protected static provider = 'aws';
-  protected static iconDir = 'resources/aws';
-  
-  // AWS-specific styling
-  constructor(label: string = '', options: any = {}) {
-    super(label, {
-      fontcolor: '#2D3436',
-      ...options
-    });
-  }
-}
+export { AWSNode };
 
 export class AWS extends AWSNode {
   protected static icon = 'aws.png';

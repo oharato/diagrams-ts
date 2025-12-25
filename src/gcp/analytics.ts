@@ -2,7 +2,7 @@
  * GCP Analytics services
  */
 
-import { GCPNode } from './index';
+import { GCPNode } from './base';
 
 class AnalyticsNode extends GCPNode {
   protected static type = 'analytics';

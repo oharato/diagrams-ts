@@ -2,7 +2,7 @@
  * AWS Storage services
  */
 
-import { AWSNode } from './index';
+import { AWSNode } from './base';
 
 class StorageNode extends AWSNode {
   protected static type = 'storage';

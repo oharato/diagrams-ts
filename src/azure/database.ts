@@ -2,7 +2,7 @@
  * Azure Database services
  */
 
-import { AzureNode } from './index';
+import { AzureNode } from './base';
 
 class DatabaseNode extends AzureNode {
   protected static type = 'database';

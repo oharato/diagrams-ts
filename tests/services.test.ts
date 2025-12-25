@@ -26,6 +26,13 @@ vi.mock('ts-graphviz', () => ({
   digraph: vi.fn(() => ({
     node: vi.fn(),
     edge: vi.fn(),
+    set: vi.fn(),
+    subgraph: vi.fn(() => ({
+      node: vi.fn(),
+      edge: vi.fn(),
+      set: vi.fn(),
+      subgraph: vi.fn(),
+    })),
   })),
   toDot: vi.fn(() => 'digraph {}'),
 }));

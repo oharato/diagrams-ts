@@ -2,7 +2,7 @@
  * AWS Database services
  */
 
-import { AWSNode } from './index';
+import { AWSNode } from './base';
 
 class DatabaseNode extends AWSNode {
   protected static type = 'database';
