@@ -262,6 +262,9 @@ npm run format:check
 初回セットアップ：
 
 ```bash
+# 依存関係をインストール
+npm install
+
 # pre-commitをインストール
 pip install pre-commit
 
@@ -273,7 +276,9 @@ pre-commit install
 - YAML構文チェック
 - ファイル末尾の修正
 - 末尾の空白削除
-- Pythonコードのフォーマット（該当する場合）
+- **oxlint**: TypeScript/JavaScriptのリント
+- **oxfmt**: TypeScript/JavaScriptのフォーマット
+- TypeScriptビルドチェック
 
 手動で全ファイルをチェックする場合：
 

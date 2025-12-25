@@ -7,6 +7,9 @@
 This project uses pre-commit hooks to ensure code quality. Before making your first commit:
 
 ```bash
+# Install dependencies
+npm install
+
 # Install pre-commit
 pip install pre-commit
 
@@ -14,7 +17,15 @@ pip install pre-commit
 pre-commit install
 ```
 
-After installation, pre-commit will automatically run checks before each commit. To manually run checks on all files:
+The pre-commit hooks will automatically run:
+- YAML syntax validation
+- End-of-file fixes
+- Trailing whitespace removal
+- **oxlint**: TypeScript/JavaScript linting
+- **oxfmt**: TypeScript/JavaScript formatting
+- TypeScript build check
+
+To manually run checks on all files:
 
 ```bash
 pre-commit run --all-files

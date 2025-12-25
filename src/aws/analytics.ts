@@ -2,59 +2,59 @@
  * AWS Analytics services
  */
 
-import { AWSNode } from './base';
+import { AWSNode } from "./base";
 
 class AnalyticsNode extends AWSNode {
-  protected static type = 'analytics';
-  protected static iconDir = 'resources/aws/analytics';
+  protected static type = "analytics";
+  protected static iconDir = "resources/aws/analytics";
 }
 
 export class Analytics extends AnalyticsNode {
-  protected static icon = 'analytics.png';
+  protected static icon = "analytics.png";
 }
 
 export class Athena extends AnalyticsNode {
-  protected static icon = 'athena.png';
+  protected static icon = "athena.png";
 }
 
 export class CloudsearchNode extends AnalyticsNode {
-  protected static icon = 'cloudsearch.png';
+  protected static icon = "cloudsearch.png";
 }
 
 export class DataPipeline extends AnalyticsNode {
-  protected static icon = 'data-pipeline.png';
+  protected static icon = "data-pipeline.png";
 }
 
 export class ElasticsearchService extends AnalyticsNode {
-  protected static icon = 'elasticsearch-service.png';
+  protected static icon = "elasticsearch-service.png";
 }
 
 export class EMR extends AnalyticsNode {
-  protected static icon = 'emr.png';
+  protected static icon = "emr.png";
 }
 
 export class Glue extends AnalyticsNode {
-  protected static icon = 'glue.png';
+  protected static icon = "glue.png";
 }
 
 export class Kinesis extends AnalyticsNode {
-  protected static icon = 'kinesis.png';
+  protected static icon = "kinesis.png";
 }
 
 export class KinesisDataAnalytics extends AnalyticsNode {
-  protected static icon = 'kinesis-data-analytics.png';
+  protected static icon = "kinesis-data-analytics.png";
 }
 
 export class KinesisDataFirehose extends AnalyticsNode {
-  protected static icon = 'kinesis-data-firehose.png';
+  protected static icon = "kinesis-data-firehose.png";
 }
 
 export class KinesisDataStreams extends AnalyticsNode {
-  protected static icon = 'kinesis-data-streams.png';
+  protected static icon = "kinesis-data-streams.png";
 }
 
 export class QuickSight extends AnalyticsNode {
-  protected static icon = 'quicksight.png';
+  protected static icon = "quicksight.png";
 }
 
 // Aliases

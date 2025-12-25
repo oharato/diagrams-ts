@@ -155,6 +155,9 @@ This project uses pre-commit hooks to automatically run code quality checks befo
 Initial setup:
 
 ```bash
+# Install dependencies
+npm install
+
 # Install pre-commit
 pip install pre-commit
 
@@ -166,7 +169,9 @@ After setup, every `git commit` will automatically run the following checks:
 - YAML syntax validation
 - End-of-file fixes
 - Trailing whitespace removal
-- Python code formatting (when applicable)
+- **oxlint**: TypeScript/JavaScript linting
+- **oxfmt**: TypeScript/JavaScript formatting
+- TypeScript build check
 
 To manually check all files:
 

@@ -2,35 +2,35 @@
  * OnPrem Queue/Messaging services
  */
 
-import { OnPremNode } from './base';
+import { OnPremNode } from "./base";
 
 class QueueNode extends OnPremNode {
-  protected static type = 'queue';
-  protected static iconDir = 'resources/onprem/queue';
+  protected static type = "queue";
+  protected static iconDir = "resources/onprem/queue";
 }
 
 export class Activemq extends QueueNode {
-  protected static icon = 'activemq.png';
+  protected static icon = "activemq.png";
 }
 
 export class Celery extends QueueNode {
-  protected static icon = 'celery.png';
+  protected static icon = "celery.png";
 }
 
 export class Kafka extends QueueNode {
-  protected static icon = 'kafka.png';
+  protected static icon = "kafka.png";
 }
 
 export class Nats extends QueueNode {
-  protected static icon = 'nats.png';
+  protected static icon = "nats.png";
 }
 
 export class Rabbitmq extends QueueNode {
-  protected static icon = 'rabbitmq.png';
+  protected static icon = "rabbitmq.png";
 }
 
 export class Zeromq extends QueueNode {
-  protected static icon = 'zeromq.png';
+  protected static icon = "zeromq.png";
 }
 
 // Aliases

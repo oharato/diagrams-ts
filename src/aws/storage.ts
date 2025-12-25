@@ -2,55 +2,55 @@
  * AWS Storage services
  */
 
-import { AWSNode } from './base';
+import { AWSNode } from "./base";
 
 class StorageNode extends AWSNode {
-  protected static type = 'storage';
-  protected static iconDir = 'resources/aws/storage';
+  protected static type = "storage";
+  protected static iconDir = "resources/aws/storage";
 }
 
 export class Backup extends StorageNode {
-  protected static icon = 'backup.png';
+  protected static icon = "backup.png";
 }
 
 export class CloudendureDisasterRecovery extends StorageNode {
-  protected static icon = 'cloudendure-disaster-recovery.png';
+  protected static icon = "cloudendure-disaster-recovery.png";
 }
 
 export class ElasticBlockStoreEBS extends StorageNode {
-  protected static icon = 'elastic-block-store-ebs.png';
+  protected static icon = "elastic-block-store-ebs.png";
 }
 
 export class ElasticFileSystemEFS extends StorageNode {
-  protected static icon = 'elastic-file-system-efs.png';
+  protected static icon = "elastic-file-system-efs.png";
 }
 
 export class Fsx extends StorageNode {
-  protected static icon = 'fsx.png';
+  protected static icon = "fsx.png";
 }
 
 export class S3Glacier extends StorageNode {
-  protected static icon = 's3-glacier.png';
+  protected static icon = "s3-glacier.png";
 }
 
 export class SimpleStorageServiceS3 extends StorageNode {
-  protected static icon = 'simple-storage-service-s3.png';
+  protected static icon = "simple-storage-service-s3.png";
 }
 
 export class SnowballEdge extends StorageNode {
-  protected static icon = 'snowball-edge.png';
+  protected static icon = "snowball-edge.png";
 }
 
 export class Snowball extends StorageNode {
-  protected static icon = 'snowball.png';
+  protected static icon = "snowball.png";
 }
 
 export class StorageGateway extends StorageNode {
-  protected static icon = 'storage-gateway.png';
+  protected static icon = "storage-gateway.png";
 }
 
 export class Storage extends StorageNode {
-  protected static icon = 'storage.png';
+  protected static icon = "storage.png";
 }
 
 // Aliases
