@@ -2,7 +2,7 @@
  * Azure Network services
  */
 
-import { AzureNode } from './index';
+import { AzureNode } from './base';
 
 class NetworkNode extends AzureNode {
   protected static type = 'network';

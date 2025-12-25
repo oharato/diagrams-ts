@@ -2,7 +2,7 @@
  * OnPrem Database services
  */
 
-import { OnPremNode } from './index';
+import { OnPremNode } from './base';
 
 class DatabaseNode extends OnPremNode {
   protected static type = 'database';

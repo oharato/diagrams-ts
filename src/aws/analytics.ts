@@ -2,7 +2,7 @@
  * AWS Analytics services
  */
 
-import { AWSNode } from './index';
+import { AWSNode } from './base';
 
 class AnalyticsNode extends AWSNode {
   protected static type = 'analytics';

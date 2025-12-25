@@ -2,7 +2,7 @@
  * GCP Network services
  */
 
-import { GCPNode } from './index';
+import { GCPNode } from './base';
 
 class NetworkNode extends GCPNode {
   protected static type = 'network';

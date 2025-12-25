@@ -2,7 +2,7 @@
  * AWS Security services
  */
 
-import { AWSNode } from './index';
+import { AWSNode } from './base';
 
 class SecurityNode extends AWSNode {
   protected static type = 'security';

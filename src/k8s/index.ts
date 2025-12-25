@@ -2,20 +2,9 @@
  * K8S provides a set of services for Kubernetes.
  */
 
-import { Node } from '../index';
+import { K8SNode } from './base';
 
-export class K8SNode extends Node {
-  protected static provider = 'k8s';
-  protected static iconDir = 'resources/k8s';
-  
-  // K8S-specific styling
-  constructor(label: string = '', options: any = {}) {
-    super(label, {
-      fontcolor: '#2d3436',
-      ...options
-    });
-  }
-}
+export { K8SNode };
 
 export class K8S extends K8SNode {
   protected static icon = 'k8s.png';

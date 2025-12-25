@@ -3,7 +3,7 @@
  * This module is a TypeScript port of the Python compute module.
  */
 
-import { AWSNode } from './index';
+import { AWSNode } from './base';
 
 class ComputeNode extends AWSNode {
   protected static type = 'compute';

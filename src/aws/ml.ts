@@ -2,7 +2,7 @@
  * AWS Machine Learning services
  */
 
-import { AWSNode } from './index';
+import { AWSNode } from './base';
 
 class MLNode extends AWSNode {
   protected static type = 'ml';

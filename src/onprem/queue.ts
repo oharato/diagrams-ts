@@ -2,7 +2,7 @@
  * OnPrem Queue/Messaging services
  */
 
-import { OnPremNode } from './index';
+import { OnPremNode } from './base';
 
 class QueueNode extends OnPremNode {
   protected static type = 'queue';

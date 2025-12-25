@@ -2,7 +2,7 @@
  * AWS Network services
  */
 
-import { AWSNode } from './index';
+import { AWSNode } from './base';
 
 class NetworkNode extends AWSNode {
   protected static type = 'network';
