@@ -2,7 +2,7 @@
  * AWS Integration services
  */
 
-import { AWSNode } from './index';
+import { AWSNode } from './base';
 
 class IntegrationNode extends AWSNode {
   protected static type = 'integration';

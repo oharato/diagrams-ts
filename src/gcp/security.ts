@@ -2,7 +2,7 @@
  * GCP Security services
  */
 
-import { GCPNode } from './index';
+import { GCPNode } from './base';
 
 class SecurityNode extends GCPNode {
   protected static type = 'security';

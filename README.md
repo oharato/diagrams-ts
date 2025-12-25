@@ -36,16 +36,16 @@ import { EC2, Lambda } from './src/aws/compute';
 
 async function main() {
   const diagram = new Diagram({ name: 'Web Service', show: false });
-  
+
   await diagram.use(async () => {
     const cluster = new Cluster({ label: 'Web Tier' });
-    
+
     await cluster.use(async () => {
       const web1 = new EC2('web1');
       const web2 = new EC2('web2');
       const web3 = new EC2('web3');
     });
-    
+
     const lb = new Lambda('Lambda Function');
   });
 }
@@ -98,7 +98,7 @@ import { Pod, Deployment } from './src/k8s/compute';
 
 async function main() {
   const diagram = new Diagram({ name: 'Multi-Cloud', show: false });
-  
+
   await diagram.use(async () => {
     // AWSクラスター
     const awsCluster = new Cluster({ label: 'AWS' });
@@ -107,7 +107,7 @@ async function main() {
       const lambda = new Lambda('api');
       ec2.to(lambda);
     });
-    
+
     // GCPクラスター
     const gcpCluster = new Cluster({ label: 'GCP' });
     await gcpCluster.use(async () => {
@@ -115,7 +115,7 @@ async function main() {
       const gke = new GKE('cluster');
       gce.to(gke);
     });
-    
+
     // Azureクラスター
     const azureCluster = new Cluster({ label: 'Azure' });
     await azureCluster.use(async () => {
@@ -308,4 +308,3 @@ npm run format:check
 ## ライセンス
 
 MITライセンス（オリジナルプロジェクトと同じ）
-

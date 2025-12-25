@@ -3,7 +3,7 @@
  * This module is a TypeScript port of the Python compute module.
  */
 
-import { GCPNode } from './index';
+import { GCPNode } from './base';
 
 class ComputeNode extends GCPNode {
   protected static type = 'compute';

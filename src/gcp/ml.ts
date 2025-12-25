@@ -2,7 +2,7 @@
  * GCP Machine Learning services
  */
 
-import { GCPNode } from './index';
+import { GCPNode } from './base';
 
 class MLNode extends GCPNode {
   protected static type = 'ml';

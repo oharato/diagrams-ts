@@ -6,7 +6,7 @@
 
 ### AWS (Amazon Web Services)
 - **モジュール**: `src/aws/`
-- **サービス**: 
+- **サービス**:
   - **Compute**: EC2, Lambda, ECS, EKS, Fargate
   - **Database**: RDS, DynamoDB, Aurora, ElastiCache, Neptune
   - **Storage**: S3, EBS, EFS, Glacier, Storage Gateway
@@ -85,7 +85,7 @@ await diagram.use(async () => {
   const rds = new RDS('database');
   const s3 = new S3('assets');
   const iam = new IAM('security');
-  
+
   ec2.to(rds);
   ec2.to(s3);
 });
@@ -106,7 +106,7 @@ await diagram.use(async () => {
   const gke = new GKE('k8s-cluster');
   const bigtable = new Bigtable('nosql-db');
   const gcs = new GCS('storage');
-  
+
   gce.to(gke);
   gke.to(bigtable);
   gce.to(gcs);
@@ -127,7 +127,7 @@ await diagram.use(async () => {
   const django = new Django('api');
   const js = new JavaScript('frontend');
   const react = new React('ui');
-  
+
   python.to(django);
   js.to(react);
   react.to(django);
@@ -148,7 +148,7 @@ await diagram.use(async () => {
   const nginx = new Nginx('web-proxy');
   const server = new Server('app-server');
   const postgres = new PostgreSQL('database');
-  
+
   nginx.to(server);
   server.to(postgres);
 });
@@ -169,12 +169,12 @@ await diagram.use(async () => {
   await awsCluster.use(async () => {
     const ec2 = new EC2('instance');
   });
-  
+
   const gcpCluster = new Cluster({ label: 'GCP' });
   await gcpCluster.use(async () => {
     const gce = new GCE('instance');
   });
-  
+
   const azureCluster = new Cluster({ label: 'Azure' });
   await azureCluster.use(async () => {
     const vm = new VM('instance');

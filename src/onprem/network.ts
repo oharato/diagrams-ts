@@ -2,7 +2,7 @@
  * OnPrem Network services
  */
 
-import { OnPremNode } from './index';
+import { OnPremNode } from './base';
 
 class NetworkNode extends OnPremNode {
   protected static type = 'network';

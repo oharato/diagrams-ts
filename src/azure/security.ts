@@ -2,7 +2,7 @@
  * Azure Security services
  */
 
-import { AzureNode } from './index';
+import { AzureNode } from './base';
 
 class SecurityNode extends AzureNode {
   protected static type = 'security';

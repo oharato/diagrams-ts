@@ -2,7 +2,7 @@
  * Azure Storage services
  */
 
-import { AzureNode } from './index';
+import { AzureNode } from './base';
 
 class StorageNode extends AzureNode {
   protected static type = 'storage';

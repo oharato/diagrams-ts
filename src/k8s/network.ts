@@ -2,7 +2,7 @@
  * K8S Network resources
  */
 
-import { K8SNode } from './index';
+import { K8SNode } from './base';
 
 class NetworkNode extends K8SNode {
   protected static type = 'network';

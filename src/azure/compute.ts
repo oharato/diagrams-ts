@@ -3,7 +3,7 @@
  * This module is a TypeScript port of the Python compute module.
  */
 
-import { AzureNode } from './index';
+import { AzureNode } from './base';
 
 class ComputeNode extends AzureNode {
   protected static type = 'compute';

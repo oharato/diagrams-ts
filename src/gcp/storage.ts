@@ -2,7 +2,7 @@
  * GCP Storage services
  */
 
-import { GCPNode } from './index';
+import { GCPNode } from './base';
 
 class StorageNode extends GCPNode {
   protected static type = 'storage';
