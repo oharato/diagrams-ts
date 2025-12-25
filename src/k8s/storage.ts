@@ -2,7 +2,7 @@
  * K8S Storage resources
  */
 
-import { K8SNode } from './index';
+import { K8SNode } from './base';
 
 class StorageNode extends K8SNode {
   protected static type = 'storage';

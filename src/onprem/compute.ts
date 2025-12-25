@@ -2,7 +2,7 @@
  * OnPrem Compute services
  */
 
-import { OnPremNode } from './index';
+import { OnPremNode } from './base';
 
 class ComputeNode extends OnPremNode {
   protected static type = 'compute';

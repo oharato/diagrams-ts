@@ -2,7 +2,7 @@
  * GCP Database services
  */
 
-import { GCPNode } from './index';
+import { GCPNode } from './base';
 
 class DatabaseNode extends GCPNode {
   protected static type = 'database';

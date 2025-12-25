@@ -2,7 +2,7 @@
  * Programming Frameworks
  */
 
-import { ProgrammingNode } from './index';
+import { ProgrammingNode } from './base';
 
 class FrameworkNode extends ProgrammingNode {
   protected static type = 'framework';

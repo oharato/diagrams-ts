@@ -2,7 +2,7 @@
  * Programming Languages
  */
 
-import { ProgrammingNode } from './index';
+import { ProgrammingNode } from './base';
 
 class LanguageNode extends ProgrammingNode {
   protected static type = 'language';

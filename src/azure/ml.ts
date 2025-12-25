@@ -2,7 +2,7 @@
  * Azure Machine Learning services
  */
 
-import { AzureNode } from './index';
+import { AzureNode } from './base';
 
 class MLNode extends AzureNode {
   protected static type = 'ml';

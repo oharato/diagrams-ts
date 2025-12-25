@@ -3,7 +3,7 @@
  * This module is a TypeScript port of the Python compute module.
  */
 
-import { K8SNode } from './index';
+import { K8SNode } from './base';
 
 class ComputeNode extends K8SNode {
   protected static type = 'compute';

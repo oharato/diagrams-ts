@@ -2,7 +2,7 @@
  * Azure Analytics services
  */
 
-import { AzureNode } from './index';
+import { AzureNode } from './base';
 
 class AnalyticsNode extends AzureNode {
   protected static type = 'analytics';
