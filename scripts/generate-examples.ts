@@ -9,7 +9,7 @@
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 
 /**
  * Recursively find all TypeScript files in a directory
@@ -17,18 +17,22 @@ import { execSync } from 'child_process';
 async function findTypescriptFiles(dir: string): Promise<string[]> {
   const files: string[] = [];
   
-  const items = await fs.readdir(dir);
-  
-  for (const item of items) {
-    const fullPath = path.join(dir, item);
-    const stat = await fs.stat(fullPath);
+  try {
+    const items = await fs.readdir(dir, { withFileTypes: true });
     
-    if (stat.isDirectory()) {
-      // Recursively search subdirectories
-      files.push(...await findTypescriptFiles(fullPath));
-    } else if (stat.isFile() && item.endsWith('.ts')) {
-      files.push(fullPath);
+    for (const item of items) {
+      const fullPath = path.join(dir, item.name);
+      
+      if (item.isDirectory()) {
+        // Recursively search subdirectories
+        files.push(...await findTypescriptFiles(fullPath));
+      } else if (item.isFile() && item.name.endsWith('.ts')) {
+        files.push(fullPath);
+      }
     }
+  } catch (error) {
+    console.error(`Error reading directory ${dir}:`, error);
+    throw error;
   }
   
   return files;
@@ -48,8 +52,8 @@ function executeTypescriptFile(filePath: string): void {
   try {
     // Execute the TypeScript file with tsx from the file's directory
     // This ensures the diagram is generated in the same directory as the source file
-    // Using template literal is safe here since fileName comes from fs.readdir
-    execSync(`npx tsx ${fileName}`, {
+    // Using execFileSync with separate arguments to prevent command injection
+    execFileSync('npx', ['tsx', fileName], {
       cwd: dir,
       stdio: 'inherit'
     });
@@ -70,6 +74,14 @@ async function main() {
   console.log('Batch Image Generation Script');
   console.log('==============================');
   console.log(`Searching for TypeScript files in: ${examplesDir}\n`);
+  
+  // Check if examples directory exists
+  try {
+    await fs.access(examplesDir);
+  } catch (error) {
+    console.error(`Error: Examples directory not found at ${examplesDir}`);
+    process.exit(1);
+  }
   
   // Find all TypeScript files
   const tsFiles = await findTypescriptFiles(examplesDir);
@@ -97,4 +109,7 @@ async function main() {
 }
 
 // Run the script
-main().catch(console.error);
+main().catch((error) => {
+  console.error('Fatal error:', error);
+  process.exit(1);
+});
