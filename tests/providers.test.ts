@@ -9,17 +9,25 @@ import { Pod, Deployment, StatefulSet } from '../src/k8s/compute';
 
 // Mock ts-graphviz to avoid ES module issues in tests
 vi.mock('ts-graphviz', () => ({
-  digraph: vi.fn(() => ({
-    node: vi.fn(),
-    edge: vi.fn(),
-    set: vi.fn(),
-    subgraph: vi.fn(() => ({
+  digraph: vi.fn(() => {
+    const attrs = new Map();
+    const createSubgraphMock = () => {
+      const subAttrs = new Map();
+      return {
+        node: vi.fn(),
+        edge: vi.fn(),
+        set: vi.fn((key, value) => subAttrs.set(key, value)),
+        get: vi.fn((key) => subAttrs.get(key)),
+      };
+    };
+    return {
       node: vi.fn(),
       edge: vi.fn(),
-      set: vi.fn(),
-      subgraph: vi.fn(),
-    })),
-  })),
+      set: vi.fn((key, value) => attrs.set(key, value)),
+      get: vi.fn((key) => attrs.get(key)),
+      subgraph: vi.fn(() => createSubgraphMock()),
+    };
+  }),
   toDot: vi.fn(() => 'digraph {}'),
 }));
 
