@@ -1,0 +1,186 @@
+digraph "Microservices Architecture" {
+  rankdir = "LR";
+  "0b171f14b1a12f9168a103538dd24271" [
+    label = "domain";
+    shape = "none";
+    height = "1.4";
+    image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/network/route-53.png";
+    labelloc = "b";
+    imagescale = "true";
+    fixedsize = "true";
+    margin = "0.3";
+    fontname = "Sans-Serif";
+    fontcolor = "#2D3436";
+  ];
+  "991e7d07b8babf4c9963f02df05907cc" [
+    label = "load-balancer";
+    shape = "none";
+    height = "1.4";
+    image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/network/elastic-load-balancing.png";
+    labelloc = "b";
+    imagescale = "true";
+    fixedsize = "true";
+    margin = "0.3";
+    fontname = "Sans-Serif";
+    fontcolor = "#2D3436";
+  ];
+  subgraph "cluster_Microservices" {
+    label = "Microservices";
+    style = "filled,rounded";
+    fillcolor = "#E5F5FD";
+    fontsize = 12;
+    fontname = "Sans-Serif";
+    "0207b19c0edbcdb957dabf640190ad6b" [
+      label = "auth-service";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/compute/elastic-container-service.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2D3436";
+    ];
+    "a3f1644a00d5c0962248284a1e00e340" [
+      label = "user-service";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/compute/elastic-container-service.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2D3436";
+    ];
+    "9e2bd8b957defe06bc77bab919f8ef51" [
+      label = "order-service";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/compute/elastic-container-service.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2D3436";
+    ];
+    "2e33fb8a6d373f446d113662604f29cd" [
+      label = "inventory-service";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/compute/elastic-container-service.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2D3436";
+    ];
+  }
+  subgraph "cluster_Data_Layer" {
+    label = "Data Layer";
+    style = "filled,rounded";
+    fillcolor = "#E5F5FD";
+    fontsize = 12;
+    fontname = "Sans-Serif";
+    "df6caf578eadac45f75f68289297d075" [
+      label = "postgres-db";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/database/rds.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2D3436";
+    ];
+    "abc5c0515c576d6aa4b5c37cda457279" [
+      label = "redis-cache";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/database/elasticache.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2D3436";
+    ];
+  }
+  subgraph "cluster_Messaging" {
+    label = "Messaging";
+    style = "filled,rounded";
+    fillcolor = "#E5F5FD";
+    fontsize = 12;
+    fontname = "Sans-Serif";
+    "5e8010afd5a5730b32a6eab278277a99" [
+      label = "order-queue";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/integration/simple-queue-service-sqs.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2D3436";
+    ];
+    "57af785b024c10e6fdf2e9652e0d54dd" [
+      label = "notifications";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/aws/integration/simple-notification-service-sns.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2D3436";
+    ];
+  }
+  "0b171f14b1a12f9168a103538dd24271" -> "991e7d07b8babf4c9963f02df05907cc" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "991e7d07b8babf4c9963f02df05907cc" -> "0207b19c0edbcdb957dabf640190ad6b" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "991e7d07b8babf4c9963f02df05907cc" -> "a3f1644a00d5c0962248284a1e00e340" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "991e7d07b8babf4c9963f02df05907cc" -> "9e2bd8b957defe06bc77bab919f8ef51" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "991e7d07b8babf4c9963f02df05907cc" -> "2e33fb8a6d373f446d113662604f29cd" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "df6caf578eadac45f75f68289297d075" -> "abc5c0515c576d6aa4b5c37cda457279" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "5e8010afd5a5730b32a6eab278277a99" -> "57af785b024c10e6fdf2e9652e0d54dd" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+}

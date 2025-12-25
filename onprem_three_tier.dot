@@ -1,0 +1,216 @@
+digraph "Traditional Three-Tier Architecture" {
+  rankdir = "LR";
+  "88449774b894a73f26e00b35332574ec" [
+    label = "load-balancer";
+    shape = "none";
+    height = "1.4";
+    image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/network/haproxy.png";
+    labelloc = "b";
+    imagescale = "true";
+    fixedsize = "true";
+    margin = "0.3";
+    fontname = "Sans-Serif";
+    fontcolor = "#2d3436";
+  ];
+  subgraph "cluster_Web_Tier" {
+    label = "Web Tier";
+    style = "filled,rounded";
+    fillcolor = "#E5F5FD";
+    fontsize = 12;
+    fontname = "Sans-Serif";
+    "fe9a3468b047d611d4277803d1b75b83" [
+      label = "web-server-1";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/network/nginx.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+    "bf47cd9a28442170ae916e529fd2ca23" [
+      label = "web-server-2";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/network/nginx.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+    "8388ca27a90801e8d974c9587db9bc8d" [
+      label = "web-server-3";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/network/nginx.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+  }
+  subgraph "cluster_Application_Tier" {
+    label = "Application Tier";
+    style = "filled,rounded";
+    fillcolor = "#E5F5FD";
+    fontsize = 12;
+    fontname = "Sans-Serif";
+    "934838404250fd22ecfaf0ae67e0da87" [
+      label = "app-server-1";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/compute/server.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+    "2701cf44436ef3463d25c45c4a031c90" [
+      label = "app-server-2";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/compute/server.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+    "d58db44c6ec998f4d066001c522a0158" [
+      label = "app-server-3";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/compute/server.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+    "1c871f9b9295abdc3e4d36a252c43e2f" [
+      label = "app-server-4";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/compute/server.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+  }
+  subgraph "cluster_Database_Tier" {
+    label = "Database Tier";
+    style = "filled,rounded";
+    fillcolor = "#E5F5FD";
+    fontsize = 12;
+    fontname = "Sans-Serif";
+    "68a828b51089bbeba1e684448d38bf9e" [
+      label = "primary-db";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/database/postgresql.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+    "e23a5f179bc8c56a1c8e7986ccba719c" [
+      label = "replica-db-1";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/database/postgresql.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+    "358a76743e671a099049416096839944" [
+      label = "replica-db-2";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/database/postgresql.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+    "d4b1afbcbe806c58a90cae6a11ae60eb" [
+      label = "cache-db";
+      shape = "none";
+      height = "1.4";
+      image = "/home/runner/work/diagrams-ts/diagrams-ts/resources/onprem/database/mongodb.png";
+      labelloc = "b";
+      imagescale = "true";
+      fixedsize = "true";
+      margin = "0.3";
+      fontname = "Sans-Serif";
+      fontcolor = "#2d3436";
+    ];
+  }
+  "fe9a3468b047d611d4277803d1b75b83" -> "bf47cd9a28442170ae916e529fd2ca23" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "bf47cd9a28442170ae916e529fd2ca23" -> "8388ca27a90801e8d974c9587db9bc8d" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "934838404250fd22ecfaf0ae67e0da87" -> "2701cf44436ef3463d25c45c4a031c90" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "2701cf44436ef3463d25c45c4a031c90" -> "d58db44c6ec998f4d066001c522a0158" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "d58db44c6ec998f4d066001c522a0158" -> "1c871f9b9295abdc3e4d36a252c43e2f" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "68a828b51089bbeba1e684448d38bf9e" -> "e23a5f179bc8c56a1c8e7986ccba719c" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "68a828b51089bbeba1e684448d38bf9e" -> "358a76743e671a099049416096839944" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+  "d4b1afbcbe806c58a90cae6a11ae60eb" -> "68a828b51089bbeba1e684448d38bf9e" [
+    fontcolor = "#2D3436";
+    fontname = "Sans-Serif";
+    fontsize = "13";
+    dir = "none";
+  ];
+}
