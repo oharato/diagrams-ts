@@ -127,6 +127,24 @@ export class Diagram {
     // Set graph direction (rankdir)
     this.dot.set('rankdir', this._direction);
     
+    // Set edge curve style (splines)
+    this.dot.set('splines', this._curvestyle);
+    
+    // Apply custom graph attributes
+    for (const [key, value] of Object.entries(this._graph_attr)) {
+      this.dot.set(key as any, value);
+    }
+    
+    // Apply default node attributes
+    if (Object.keys(this._node_attr).length > 0) {
+      this.dot.node(this._node_attr);
+    }
+    
+    // Apply default edge attributes
+    if (Object.keys(this._edge_attr).length > 0) {
+      this.dot.edge(this._edge_attr);
+    }
+    
     // Initialize subgraph context to the root graph
     setSubgraph(this.dot);
 

@@ -23,10 +23,21 @@ import { CosmosDb, BlobStorage, VirtualNetworks, KeyVaults } from '../src/azure'
 
 // Mock ts-graphviz
 vi.mock('ts-graphviz', () => ({
-  digraph: vi.fn(() => ({
-    node: vi.fn(),
-    edge: vi.fn(),
-  })),
+  digraph: vi.fn(() => {
+    const attrs = new Map();
+    return {
+      node: vi.fn(),
+      edge: vi.fn(),
+      set: vi.fn((key, value) => attrs.set(key, value)),
+      get: vi.fn((key) => attrs.get(key)),
+      subgraph: vi.fn(() => ({
+        node: vi.fn(),
+        edge: vi.fn(),
+        set: vi.fn(),
+        get: vi.fn(),
+      })),
+    };
+  }),
   toDot: vi.fn(() => 'digraph {}'),
 }));
 

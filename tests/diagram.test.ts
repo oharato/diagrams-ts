@@ -3,10 +3,21 @@ import { Diagram, Cluster, Node, Edge } from '../src';
 
 // Mock ts-graphviz to avoid ES module issues in tests
 vi.mock('ts-graphviz', () => ({
-  digraph: vi.fn(() => ({
-    node: vi.fn(),
-    edge: vi.fn(),
-  })),
+  digraph: vi.fn(() => {
+    const attrs = new Map();
+    return {
+      node: vi.fn(),
+      edge: vi.fn(),
+      set: vi.fn((key, value) => attrs.set(key, value)),
+      get: vi.fn((key) => attrs.get(key)),
+      subgraph: vi.fn(() => ({
+        node: vi.fn(),
+        edge: vi.fn(),
+        set: vi.fn(),
+        get: vi.fn(),
+      })),
+    };
+  }),
   toDot: vi.fn(() => 'digraph {}'),
 }));
 
