@@ -3,37 +3,47 @@ name: Run tests
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - ".github/workflows/test.yml"
-      - "pyproject.toml"
-      - "poetry.lock"
-      - "**.py"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+      - "src/**"
+      - "tests/**"
   pull_request:
     branches:
-      - master
+      - main
     paths:
       - ".github/workflows/test.yml"
-      - "pyproject.toml"
-      - "poetry.lock"
-      - "**.py"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+      - "src/**"
+      - "tests/**"
 
 jobs:
   test:
     strategy:
       matrix:
-        python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        node-version: [18.x, 20.x, 24.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: ${{ matrix.python }}
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v2
-      - name: Install poetry
-        run: curl -sSL https://install.python-poetry.org | python3 -
+      - name: Install dependencies
+        run: npm ci
+      - name: Run linter
+        run: npm run lint
+        continue-on-error: true
+      - name: Run formatter check
+        run: npm run format:check
       - name: Run all tests
-        run: |
-          poetry install
-          poetry run python -m unittest -v tests/*.py
+        run: npm test
+      - name: Build project
+        run: npm run build

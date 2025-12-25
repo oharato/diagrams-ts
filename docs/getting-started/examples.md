@@ -7,280 +7,515 @@ Here are some more examples.
 
 ## Grouped Workers on AWS
 
-```python
-from diagrams import Diagram
-from diagrams.aws.compute import EC2
-from diagrams.aws.database import RDS
-from diagrams.aws.network import ELB
+```typescript
+import { Diagram } from 'diagrams-ts';
+import { EC2 } from 'diagrams-ts/aws/compute';
+import { RDS } from 'diagrams-ts/aws/database';
+import { ELB } from 'diagrams-ts/aws/network';
 
-with Diagram("Grouped Workers", show=False, direction="TB"):
-    ELB("lb") >> [EC2("worker1"),
-                  EC2("worker2"),
-                  EC2("worker3"),
-                  EC2("worker4"),
-                  EC2("worker5")] >> RDS("events")
+async function main() {
+  const diagram = new Diagram({
+    name: 'Grouped Workers',
+    show: false,
+    direction: 'TB'
+  });
+
+  await diagram.use(async () => {
+    const lb = new ELB('lb');
+    const events = new RDS('events');
+
+    const workers = [
+      new EC2('worker1'),
+      new EC2('worker2'),
+      new EC2('worker3'),
+      new EC2('worker4'),
+      new EC2('worker5')
+    ];
+
+    lb.forward(workers);
+    workers.forEach(w => w.forward(events));
+  });
+}
+
+main();
 ```
 
 ![grouped workers diagram](/img/grouped_workers_diagram.png)
 
 ## Clustered Web Services
 
-```python
-from diagrams import Cluster, Diagram
-from diagrams.aws.compute import ECS
-from diagrams.aws.database import ElastiCache, RDS
-from diagrams.aws.network import ELB
-from diagrams.aws.network import Route53
+```typescript
+import { Cluster, Diagram } from 'diagrams-ts';
+import { ECS } from 'diagrams-ts/aws/compute';
+import { ElastiCache, RDS } from 'diagrams-ts/aws/database';
+import { ELB, Route53 } from 'diagrams-ts/aws/network';
 
-with Diagram("Clustered Web Services", show=False):
-    dns = Route53("dns")
-    lb = ELB("lb")
+async function main() {
+  const diagram = new Diagram({ name: 'Clustered Web Services', show: false });
 
-    with Cluster("Services"):
-        svc_group = [ECS("web1"),
-                     ECS("web2"),
-                     ECS("web3")]
+  await diagram.use(async () => {
+    const dns = new Route53('dns');
+    const lb = new ELB('lb');
 
-    with Cluster("DB Cluster"):
-        db_primary = RDS("userdb")
-        db_primary - [RDS("userdb ro")]
+    const svcGroup: ECS[] = [];
+    const servicesCluster = new Cluster({ label: 'Services' });
+    await servicesCluster.use(async () => {
+      svcGroup.push(
+        new ECS('web1'),
+        new ECS('web2'),
+        new ECS('web3')
+      );
+    });
 
-    memcached = ElastiCache("memcached")
+    let dbPrimary: RDS;
+    const dbCluster = new Cluster({ label: 'DB Cluster' });
+    await dbCluster.use(async () => {
+      dbPrimary = new RDS('userdb');
+      const dbRo = new RDS('userdb ro');
+      dbPrimary.to(dbRo);
+    });
 
-    dns >> lb >> svc_group
-    svc_group >> db_primary
-    svc_group >> memcached
+    const memcached = new ElastiCache('memcached');
+
+    dns.forward(lb);
+    lb.forward(svcGroup);
+    svcGroup.forEach(svc => {
+      svc.forward(dbPrimary);
+      svc.forward(memcached);
+    });
+  });
+}
+
+main();
 ```
 
 ![clustered web services diagram](/img/clustered_web_services_diagram.png)
 
 ## Event Processing on AWS
 
-```python
-from diagrams import Cluster, Diagram
-from diagrams.aws.compute import ECS, EKS, Lambda
-from diagrams.aws.database import Redshift
-from diagrams.aws.integration import SQS
-from diagrams.aws.storage import S3
+```typescript
+import { Cluster, Diagram } from 'diagrams-ts';
+import { ECS, EKS, Lambda } from 'diagrams-ts/aws/compute';
+import { Redshift } from 'diagrams-ts/aws/database';
+import { SQS } from 'diagrams-ts/aws/integration';
+import { S3 } from 'diagrams-ts/aws/storage';
 
-with Diagram("Event Processing", show=False):
-    source = EKS("k8s source")
+async function main() {
+  const diagram = new Diagram({ name: 'Event Processing', show: false });
 
-    with Cluster("Event Flows"):
-        with Cluster("Event Workers"):
-            workers = [ECS("worker1"),
-                       ECS("worker2"),
-                       ECS("worker3")]
+  await diagram.use(async () => {
+    const source = new EKS('k8s source');
 
-        queue = SQS("event queue")
+    const workers: ECS[] = [];
+    let queue: SQS;
+    const handlers: Lambda[] = [];
 
-        with Cluster("Processing"):
-            handlers = [Lambda("proc1"),
-                        Lambda("proc2"),
-                        Lambda("proc3")]
+    const eventFlowsCluster = new Cluster({ label: 'Event Flows' });
+    await eventFlowsCluster.use(async () => {
+      const eventWorkersCluster = new Cluster({ label: 'Event Workers' });
+      await eventWorkersCluster.use(async () => {
+        workers.push(
+          new ECS('worker1'),
+          new ECS('worker2'),
+          new ECS('worker3')
+        );
+      });
 
-    store = S3("events store")
-    dw = Redshift("analytics")
+      queue = new SQS('event queue');
 
-    source >> workers >> queue >> handlers
-    handlers >> store
-    handlers >> dw
+      const processingCluster = new Cluster({ label: 'Processing' });
+      await processingCluster.use(async () => {
+        handlers.push(
+          new Lambda('proc1'),
+          new Lambda('proc2'),
+          new Lambda('proc3')
+        );
+      });
+    });
+
+    const store = new S3('events store');
+    const dw = new Redshift('analytics');
+
+    source.forward(workers);
+    workers.forEach(w => w.forward(queue));
+    queue.forward(handlers);
+    handlers.forEach(h => {
+      h.forward(store);
+      h.forward(dw);
+    });
+  });
+}
+
+main();
 ```
 
 ![event processing diagram](/img/event_processing_diagram.png)
 
 ## Message Collecting System on GCP
 
-```python
-from diagrams import Cluster, Diagram
-from diagrams.gcp.analytics import BigQuery, Dataflow, PubSub
-from diagrams.gcp.compute import AppEngine, Functions
-from diagrams.gcp.database import BigTable
-from diagrams.gcp.iot import IotCore
-from diagrams.gcp.storage import GCS
+```typescript
+import { Cluster, Diagram } from 'diagrams-ts';
+import { BigQuery, Dataflow, PubSub } from 'diagrams-ts/gcp/analytics';
+import { AppEngine, Functions } from 'diagrams-ts/gcp/compute';
+import { BigTable } from 'diagrams-ts/gcp/database';
+import { IotCore } from 'diagrams-ts/gcp/iot';
+import { GCS } from 'diagrams-ts/gcp/storage';
 
-with Diagram("Message Collecting", show=False):
-    pubsub = PubSub("pubsub")
+async function main() {
+  const diagram = new Diagram({ name: 'Message Collecting', show: false });
 
-    with Cluster("Source of Data"):
-        [IotCore("core1"),
-         IotCore("core2"),
-         IotCore("core3")] >> pubsub
+  await diagram.use(async () => {
+    const pubsub = new PubSub('pubsub');
 
-    with Cluster("Targets"):
-        with Cluster("Data Flow"):
-            flow = Dataflow("data flow")
+    const sourceCluster = new Cluster({ label: 'Source of Data' });
+    await sourceCluster.use(async () => {
+      const sources = [
+        new IotCore('core1'),
+        new IotCore('core2'),
+        new IotCore('core3')
+      ];
+      sources.forEach(s => s.forward(pubsub));
+    });
 
-        with Cluster("Data Lake"):
-            flow >> [BigQuery("bq"),
-                     GCS("storage")]
+    let flow: Dataflow;
+    const targetsCluster = new Cluster({ label: 'Targets' });
+    await targetsCluster.use(async () => {
+      const dataFlowCluster = new Cluster({ label: 'Data Flow' });
+      await dataFlowCluster.use(async () => {
+        flow = new Dataflow('data flow');
+      });
 
-        with Cluster("Event Driven"):
-            with Cluster("Processing"):
-                flow >> AppEngine("engine") >> BigTable("bigtable")
+      const dataLakeCluster = new Cluster({ label: 'Data Lake' });
+      await dataLakeCluster.use(async () => {
+        const bq = new BigQuery('bq');
+        const storage = new GCS('storage');
+        flow.forward([bq, storage]);
+      });
 
-            with Cluster("Serverless"):
-                flow >> Functions("func") >> AppEngine("appengine")
+      const eventDrivenCluster = new Cluster({ label: 'Event Driven' });
+      await eventDrivenCluster.use(async () => {
+        const processingCluster = new Cluster({ label: 'Processing' });
+        await processingCluster.use(async () => {
+          const engine = new AppEngine('engine');
+          const bigtable = new BigTable('bigtable');
+          flow.forward(engine);
+          engine.forward(bigtable);
+        });
 
-    pubsub >> flow
+        const serverlessCluster = new Cluster({ label: 'Serverless' });
+        await serverlessCluster.use(async () => {
+          const func = new Functions('func');
+          const appengine = new AppEngine('appengine');
+          flow.forward(func);
+          func.forward(appengine);
+        });
+      });
+    });
+
+    pubsub.forward(flow);
+  });
+}
+
+main();
 ```
 
 ![message collecting diagram](/img/message_collecting_diagram.png)
 
 ## Exposed Pod with 3 Replicas on Kubernetes
 
-```python
-from diagrams import Diagram
-from diagrams.k8s.clusterconfig import HPA
-from diagrams.k8s.compute import Deployment, Pod, ReplicaSet
-from diagrams.k8s.network import Ingress, Service
+```typescript
+import { Diagram } from 'diagrams-ts';
+import { HPA } from 'diagrams-ts/k8s/clusterconfig';
+import { Deployment, Pod, ReplicaSet } from 'diagrams-ts/k8s/compute';
+import { Ingress, Service } from 'diagrams-ts/k8s/network';
 
-with Diagram("Exposed Pod with 3 Replicas", show=False):
-    net = Ingress("domain.com") >> Service("svc")
-    net >> [Pod("pod1"),
-            Pod("pod2"),
-            Pod("pod3")] << ReplicaSet("rs") << Deployment("dp") << HPA("hpa")
+async function main() {
+  const diagram = new Diagram({
+    name: 'Exposed Pod with 3 Replicas',
+    show: false
+  });
 
+  await diagram.use(async () => {
+    const ingress = new Ingress('domain.com');
+    const svc = new Service('svc');
+    const pods = [
+      new Pod('pod1'),
+      new Pod('pod2'),
+      new Pod('pod3')
+    ];
+    const rs = new ReplicaSet('rs');
+    const dp = new Deployment('dp');
+    const hpa = new HPA('hpa');
+
+    ingress.forward(svc);
+    svc.forward(pods);
+    pods.forEach(p => p.reverse(rs));
+    rs.reverse(dp);
+    dp.reverse(hpa);
+  });
+}
+
+main();
 ```
 
 ![exposed pod with 3 replicas diagram](/img/exposed_pod_with_3_replicas_diagram.png)
 
 ## Stateful Architecture on Kubernetes
 
-```python
-from diagrams import Cluster, Diagram
-from diagrams.k8s.compute import Pod, StatefulSet
-from diagrams.k8s.network import Service
-from diagrams.k8s.storage import PV, PVC, StorageClass
+```typescript
+import { Cluster, Diagram } from 'diagrams-ts';
+import { Pod, StatefulSet } from 'diagrams-ts/k8s/compute';
+import { Service } from 'diagrams-ts/k8s/network';
+import { PV, PVC, StorageClass } from 'diagrams-ts/k8s/storage';
 
-with Diagram("Stateful Architecture", show=False):
-    with Cluster("Apps"):
-        svc = Service("svc")
-        sts = StatefulSet("sts")
+async function main() {
+  const diagram = new Diagram({ name: 'Stateful Architecture', show: false });
 
-        apps = []
-        for _ in range(3):
-            pod = Pod("pod")
-            pvc = PVC("pvc")
-            pod - sts - pvc
-            apps.append(svc >> pod >> pvc)
+  await diagram.use(async () => {
+    let svc: Service;
+    let sts: StatefulSet;
+    const apps: Pod[] = [];
+    const pvcs: PVC[] = [];
 
-    apps << PV("pv") << StorageClass("sc")
+    const appsCluster = new Cluster({ label: 'Apps' });
+    await appsCluster.use(async () => {
+      svc = new Service('svc');
+      sts = new StatefulSet('sts');
+
+      for (let i = 0; i < 3; i++) {
+        const pod = new Pod('pod');
+        const pvc = new PVC('pvc');
+
+        svc.forward(pod);
+        pod.to(sts);
+        sts.to(pvc);
+        pod.forward(pvc);
+
+        apps.push(pod);
+        pvcs.push(pvc);
+      }
+    });
+
+    const pv = new PV('pv');
+    const sc = new StorageClass('sc');
+
+    pvcs.forEach(pvc => pvc.reverse(pv));
+    pv.reverse(sc);
+  });
+}
+
+main();
 ```
 
 ![stateful architecture diagram](/img/stateful_architecture_diagram.png)
 
 ## Advanced Web Service with On-Premises
 
-```python
-from diagrams import Cluster, Diagram
-from diagrams.onprem.analytics import Spark
-from diagrams.onprem.compute import Server
-from diagrams.onprem.database import PostgreSQL
-from diagrams.onprem.inmemory import Redis
-from diagrams.onprem.aggregator import Fluentd
-from diagrams.onprem.monitoring import Grafana, Prometheus
-from diagrams.onprem.network import Nginx
-from diagrams.onprem.queue import Kafka
+```typescript
+import { Cluster, Diagram } from 'diagrams-ts';
+import { Spark } from 'diagrams-ts/onprem/analytics';
+import { Server } from 'diagrams-ts/onprem/compute';
+import { PostgreSQL } from 'diagrams-ts/onprem/database';
+import { Redis } from 'diagrams-ts/onprem/inmemory';
+import { Fluentd } from 'diagrams-ts/onprem/aggregator';
+import { Grafana, Prometheus } from 'diagrams-ts/onprem/monitoring';
+import { Nginx } from 'diagrams-ts/onprem/network';
+import { Kafka } from 'diagrams-ts/onprem/queue';
 
-with Diagram("Advanced Web Service with On-Premises", show=False):
-    ingress = Nginx("ingress")
+async function main() {
+  const diagram = new Diagram({
+    name: 'Advanced Web Service with On-Premises',
+    show: false
+  });
 
-    metrics = Prometheus("metric")
-    metrics << Grafana("monitoring")
+  await diagram.use(async () => {
+    const ingress = new Nginx('ingress');
 
-    with Cluster("Service Cluster"):
-        grpcsvc = [
-            Server("grpc1"),
-            Server("grpc2"),
-            Server("grpc3")]
+    const metrics = new Prometheus('metric');
+    const monitoring = new Grafana('monitoring');
+    monitoring.forward(metrics);
 
-    with Cluster("Sessions HA"):
-        primary = Redis("session")
-        primary - Redis("replica") << metrics
-        grpcsvc >> primary
+    const grpcsvc: Server[] = [];
+    const serviceCluster = new Cluster({ label: 'Service Cluster' });
+    await serviceCluster.use(async () => {
+      grpcsvc.push(
+        new Server('grpc1'),
+        new Server('grpc2'),
+        new Server('grpc3')
+      );
+    });
 
-    with Cluster("Database HA"):
-        primary = PostgreSQL("users")
-        primary - PostgreSQL("replica") << metrics
-        grpcsvc >> primary
+    let primarySession: Redis;
+    const sessionsCluster = new Cluster({ label: 'Sessions HA' });
+    await sessionsCluster.use(async () => {
+      primarySession = new Redis('session');
+      const replica = new Redis('replica');
+      primarySession.to(replica);
+      replica.forward(metrics);
+    });
+    grpcsvc.forEach(svc => svc.forward(primarySession));
 
-    aggregator = Fluentd("logging")
-    aggregator >> Kafka("stream") >> Spark("analytics")
+    let primaryDb: PostgreSQL;
+    const dbCluster = new Cluster({ label: 'Database HA' });
+    await dbCluster.use(async () => {
+      primaryDb = new PostgreSQL('users');
+      const replica = new PostgreSQL('replica');
+      primaryDb.to(replica);
+      replica.forward(metrics);
+    });
+    grpcsvc.forEach(svc => svc.forward(primaryDb));
 
-    ingress >> grpcsvc >> aggregator
+    const aggregator = new Fluentd('logging');
+    const kafka = new Kafka('stream');
+    const analytics = new Spark('analytics');
+    aggregator.forward(kafka);
+    kafka.forward(analytics);
+
+    ingress.forward(grpcsvc);
+    grpcsvc.forEach(svc => svc.forward(aggregator));
+  });
+}
+
+main();
 ```
 
 ![advanced web service with on-premises diagram](/img/advanced_web_service_with_on-premises.png)
 
 ## Advanced Web Service with On-Premises (with colors and labels)
 
-```python
-from diagrams import Cluster, Diagram, Edge
-from diagrams.onprem.analytics import Spark
-from diagrams.onprem.compute import Server
-from diagrams.onprem.database import PostgreSQL
-from diagrams.onprem.inmemory import Redis
-from diagrams.onprem.aggregator import Fluentd
-from diagrams.onprem.monitoring import Grafana, Prometheus
-from diagrams.onprem.network import Nginx
-from diagrams.onprem.queue import Kafka
+```typescript
+import { Cluster, Diagram, Edge } from 'diagrams-ts';
+import { Spark } from 'diagrams-ts/onprem/analytics';
+import { Server } from 'diagrams-ts/onprem/compute';
+import { PostgreSQL } from 'diagrams-ts/onprem/database';
+import { Redis } from 'diagrams-ts/onprem/inmemory';
+import { Fluentd } from 'diagrams-ts/onprem/aggregator';
+import { Grafana, Prometheus } from 'diagrams-ts/onprem/monitoring';
+import { Nginx } from 'diagrams-ts/onprem/network';
+import { Kafka } from 'diagrams-ts/onprem/queue';
 
-with Diagram(name="Advanced Web Service with On-Premises (colored)", show=False):
-    ingress = Nginx("ingress")
+async function main() {
+  const diagram = new Diagram({
+    name: 'Advanced Web Service with On-Premises (colored)',
+    show: false
+  });
 
-    metrics = Prometheus("metric")
-    metrics << Edge(color="firebrick", style="dashed") << Grafana("monitoring")
+  await diagram.use(async () => {
+    const ingress = new Nginx('ingress');
 
-    with Cluster("Service Cluster"):
-        grpcsvc = [
-            Server("grpc1"),
-            Server("grpc2"),
-            Server("grpc3")]
+    const metrics = new Prometheus('metric');
+    const monitoring = new Grafana('monitoring');
+    // Python: metrics << Grafana('monitoring') means monitoring forwards to metrics
+    monitoring.forward(metrics);
 
-    with Cluster("Sessions HA"):
-        primary = Redis("session")
-        primary - Edge(color="brown", style="dashed") - Redis("replica") << Edge(label="collect") << metrics
-        grpcsvc >> Edge(color="brown") >> primary
+    const grpcsvc: Server[] = [];
+    const serviceCluster = new Cluster({ label: 'Service Cluster' });
+    await serviceCluster.use(async () => {
+      grpcsvc.push(
+        new Server('grpc1'),
+        new Server('grpc2'),
+        new Server('grpc3')
+      );
+    });
 
-    with Cluster("Database HA"):
-        primary = PostgreSQL("users")
-        primary - Edge(color="brown", style="dotted") - PostgreSQL("replica") << Edge(label="collect") << metrics
-        grpcsvc >> Edge(color="black") >> primary
+    let primarySession: Redis;
+    const sessionsCluster = new Cluster({ label: 'Sessions HA' });
+    await sessionsCluster.use(async () => {
+      primarySession = new Redis('session');
+      const replica = new Redis('replica');
+      primarySession.connect(replica, new Edge({ color: 'brown', style: 'dashed' }));
+      replica.connect(metrics, new Edge({ label: 'collect' }));
+    });
+    grpcsvc.forEach(svc =>
+      svc.connect(primarySession, new Edge({ color: 'brown' }))
+    );
 
-    aggregator = Fluentd("logging")
-    aggregator >> Edge(label="parse") >> Kafka("stream") >> Edge(color="black", style="bold") >> Spark("analytics")
+    let primaryDb: PostgreSQL;
+    const dbCluster = new Cluster({ label: 'Database HA' });
+    await dbCluster.use(async () => {
+      primaryDb = new PostgreSQL('users');
+      const replica = new PostgreSQL('replica');
+      primaryDb.connect(replica, new Edge({ color: 'brown', style: 'dotted' }));
+      replica.connect(metrics, new Edge({ label: 'collect' }));
+    });
+    grpcsvc.forEach(svc =>
+      svc.connect(primaryDb, new Edge({ color: 'black' }))
+    );
 
-    ingress >> Edge(color="darkgreen") << grpcsvc >> Edge(color="darkorange") >> aggregator
+    const aggregator = new Fluentd('logging');
+    const kafka = new Kafka('stream');
+    const analytics = new Spark('analytics');
+    aggregator.connect(kafka, new Edge({ label: 'parse' }));
+    kafka.connect(analytics, new Edge({ color: 'black', style: 'bold' }));
+
+    // Python: ingress >> Edge() << grpcsvc means ingress connects forward to grpcsvc with edge
+    ingress.connect(grpcsvc[0], new Edge({ color: 'darkgreen' }));
+    grpcsvc.forEach(svc =>
+      svc.connect(aggregator, new Edge({ color: 'darkorange' }))
+    );
+  });
+}
+
+main();
 ```
 
 ![advanced web service with on-premises diagram colored](/img/advanced_web_service_with_on-premises_colored.png)
 
 ## RabbitMQ Consumers with Custom Nodes
 
-```python
-from urllib.request import urlretrieve
+```typescript
+import { Cluster, Diagram } from 'diagrams-ts';
+import { Aurora } from 'diagrams-ts/aws/database';
+import { Custom } from 'diagrams-ts/custom';
+import { Pod } from 'diagrams-ts/k8s/compute';
+import * as https from 'https';
+import * as fs from 'fs';
 
-from diagrams import Cluster, Diagram
-from diagrams.aws.database import Aurora
-from diagrams.custom import Custom
-from diagrams.k8s.compute import Pod
+// Download an image to be used into a Custom Node class
+const rabbitmqUrl = 'https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png';
+const rabbitmqIcon = 'rabbitmq.png';
 
-# Download an image to be used into a Custom Node class
-rabbitmq_url = "https://jpadilla.github.io/rabbitmqapp/assets/img/icon.png"
-rabbitmq_icon = "rabbitmq.png"
-urlretrieve(rabbitmq_url, rabbitmq_icon)
+async function downloadImage(url: string, dest: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(dest);
+    https.get(url, (response) => {
+      response.pipe(file);
+      file.on('finish', () => {
+        file.close();
+        resolve();
+      });
+    }).on('error', (err) => {
+      fs.unlink(dest, () => {});
+      reject(err);
+    });
+  });
+}
 
-with Diagram("Broker Consumers", show=False):
-    with Cluster("Consumers"):
-        consumers = [
-            Pod("worker"),
-            Pod("worker"),
-            Pod("worker")]
+async function main() {
+  await downloadImage(rabbitmqUrl, rabbitmqIcon);
 
-    queue = Custom("Message queue", rabbitmq_icon)
+  const diagram = new Diagram({ name: 'Broker Consumers', show: false });
 
-    queue >> consumers >> Aurora("Database")
+  await diagram.use(async () => {
+    const consumers: Pod[] = [];
+    const consumersCluster = new Cluster({ label: 'Consumers' });
+    await consumersCluster.use(async () => {
+      consumers.push(
+        new Pod('worker'),
+        new Pod('worker'),
+        new Pod('worker')
+      );
+    });
+
+    const queue = new Custom('Message queue', rabbitmqIcon);
+    const db = new Aurora('Database');
+
+    queue.forward(consumers);
+    consumers.forEach(c => c.forward(db));
+  });
+}
+
+main();
 ```
 
 ![rabbitmq consumers diagram](/img/rabbitmq_consumers_diagram.png)

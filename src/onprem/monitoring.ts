@@ -2,39 +2,39 @@
  * OnPrem Monitoring services
  */
 
-import { OnPremNode } from './base';
+import { OnPremNode } from "./base";
 
 class MonitoringNode extends OnPremNode {
-  protected static type = 'monitoring';
-  protected static iconDir = 'resources/onprem/monitoring';
+  protected static type = "monitoring";
+  protected static iconDir = "resources/onprem/monitoring";
 }
 
 export class Datadog extends MonitoringNode {
-  protected static icon = 'datadog.png';
+  protected static icon = "datadog.png";
 }
 
 export class Grafana extends MonitoringNode {
-  protected static icon = 'grafana.png';
+  protected static icon = "grafana.png";
 }
 
 export class Nagios extends MonitoringNode {
-  protected static icon = 'nagios.png';
+  protected static icon = "nagios.png";
 }
 
 export class Newrelic extends MonitoringNode {
-  protected static icon = 'newrelic.png';
+  protected static icon = "newrelic.png";
 }
 
 export class Prometheus extends MonitoringNode {
-  protected static icon = 'prometheus.png';
+  protected static icon = "prometheus.png";
 }
 
 export class Splunk extends MonitoringNode {
-  protected static icon = 'splunk.png';
+  protected static icon = "splunk.png";
 }
 
 export class Thanos extends MonitoringNode {
-  protected static icon = 'thanos.png';
+  protected static icon = "thanos.png";
 }
 
 // Aliases

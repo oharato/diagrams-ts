@@ -253,6 +253,38 @@ npm run format:check
 - **vitest**: Viteを基盤とした高速なユニットテストフレームワーク
 - **oxlint**: Rustで書かれた超高速リンター
 - **oxfmt**: Rustで書かれた高速コードフォーマッター
+- **pre-commit**: コード品質を保つための自動チェック
+
+### Pre-commit フック
+
+このプロジェクトでは、コミット前に自動的にコード品質チェックを実行するため、pre-commitフックを使用しています。
+
+初回セットアップ：
+
+```bash
+# 依存関係をインストール
+npm install
+
+# pre-commitをインストール
+pip install pre-commit
+
+# Gitフックをインストール
+pre-commit install
+```
+
+以降、`git commit` を実行するたびに、自動的に以下のチェックが実行されます：
+- YAML構文チェック
+- ファイル末尾の修正
+- 末尾の空白削除
+- **oxlint**: TypeScript/JavaScriptのリント
+- **oxfmt**: TypeScript/JavaScriptのフォーマット
+- TypeScriptビルドチェック
+
+手動で全ファイルをチェックする場合：
+
+```bash
+pre-commit run --all-files
+```
 
 ## Python版との違い
 

@@ -2,71 +2,71 @@
  * AWS Machine Learning services
  */
 
-import { AWSNode } from './base';
+import { AWSNode } from "./base";
 
 class MLNode extends AWSNode {
-  protected static type = 'ml';
-  protected static iconDir = 'resources/aws/ml';
+  protected static type = "ml";
+  protected static iconDir = "resources/aws/ml";
 }
 
 export class Bedrock extends MLNode {
-  protected static icon = 'bedrock.png';
+  protected static icon = "bedrock.png";
 }
 
 export class Comprehend extends MLNode {
-  protected static icon = 'comprehend.png';
+  protected static icon = "comprehend.png";
 }
 
 export class DeepLearningContainers extends MLNode {
-  protected static icon = 'deep-learning-containers.png';
+  protected static icon = "deep-learning-containers.png";
 }
 
 export class Forecast extends MLNode {
-  protected static icon = 'forecast.png';
+  protected static icon = "forecast.png";
 }
 
 export class Lex extends MLNode {
-  protected static icon = 'lex.png';
+  protected static icon = "lex.png";
 }
 
 export class Personalize extends MLNode {
-  protected static icon = 'personalize.png';
+  protected static icon = "personalize.png";
 }
 
 export class Polly extends MLNode {
-  protected static icon = 'polly.png';
+  protected static icon = "polly.png";
 }
 
 export class Rekognition extends MLNode {
-  protected static icon = 'rekognition.png';
+  protected static icon = "rekognition.png";
 }
 
 export class SagemakerGroundTruth extends MLNode {
-  protected static icon = 'sagemaker-ground-truth.png';
+  protected static icon = "sagemaker-ground-truth.png";
 }
 
 export class SagemakerModel extends MLNode {
-  protected static icon = 'sagemaker-model.png';
+  protected static icon = "sagemaker-model.png";
 }
 
 export class SagemakerNotebook extends MLNode {
-  protected static icon = 'sagemaker-notebook.png';
+  protected static icon = "sagemaker-notebook.png";
 }
 
 export class Sagemaker extends MLNode {
-  protected static icon = 'sagemaker.png';
+  protected static icon = "sagemaker.png";
 }
 
 export class Textract extends MLNode {
-  protected static icon = 'textract.png';
+  protected static icon = "textract.png";
 }
 
 export class Transcribe extends MLNode {
-  protected static icon = 'transcribe.png';
+  protected static icon = "transcribe.png";
 }
 
 export class Translate extends MLNode {
-  protected static icon = 'translate.png';
+  protected static icon = "translate.png";
 }
 
 // Aliases

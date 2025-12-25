@@ -2,27 +2,27 @@
  * K8S Storage resources
  */
 
-import { K8SNode } from './base';
+import { K8SNode } from "./base";
 
 class StorageNode extends K8SNode {
-  protected static type = 'storage';
-  protected static iconDir = 'resources/k8s/storage';
+  protected static type = "storage";
+  protected static iconDir = "resources/k8s/storage";
 }
 
 export class PV extends StorageNode {
-  protected static icon = 'pv.png';
+  protected static icon = "pv.png";
 }
 
 export class PVC extends StorageNode {
-  protected static icon = 'pvc.png';
+  protected static icon = "pvc.png";
 }
 
 export class SC extends StorageNode {
-  protected static icon = 'sc.png';
+  protected static icon = "sc.png";
 }
 
 export class Vol extends StorageNode {
-  protected static icon = 'vol.png';
+  protected static icon = "vol.png";
 }
 
 // Aliases

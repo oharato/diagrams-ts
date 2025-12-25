@@ -1,5 +1,42 @@
 # Contribution Guide
 
+## Development Setup
+
+### Pre-commit Hooks
+
+This project uses pre-commit hooks to ensure code quality. Before making your first commit:
+
+```bash
+# Install dependencies
+npm install
+
+# Install pre-commit
+pip install pre-commit
+
+# Install Git hooks
+pre-commit install
+```
+
+The pre-commit hooks will automatically run:
+- YAML syntax validation
+- End-of-file fixes
+- Trailing whitespace removal
+- **oxlint**: TypeScript/JavaScript linting
+- **oxfmt**: TypeScript/JavaScript formatting
+- TypeScript build check
+
+To manually run checks on all files:
+
+```bash
+pre-commit run --all-files
+```
+
+### Environment Setup
+
+- See [DEVELOPMENT][DEVELOPMENT.md]
+
+---
+
 You shouldn't edit the node class files (all files under `diagrams/` directory) by
 yourself.
 

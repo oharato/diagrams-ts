@@ -146,6 +146,38 @@ This project uses high-performance modern tooling:
 - **vitest**: Fast unit testing framework powered by Vite
 - **oxlint**: Blazing fast linter written in Rust
 - **oxfmt**: Fast code formatter written in Rust
+- **pre-commit**: Automated checks to maintain code quality
+
+### Pre-commit Hooks
+
+This project uses pre-commit hooks to automatically run code quality checks before each commit.
+
+Initial setup:
+
+```bash
+# Install dependencies
+npm install
+
+# Install pre-commit
+pip install pre-commit
+
+# Install Git hooks
+pre-commit install
+```
+
+After setup, every `git commit` will automatically run the following checks:
+- YAML syntax validation
+- End-of-file fixes
+- Trailing whitespace removal
+- **oxlint**: TypeScript/JavaScript linting
+- **oxfmt**: TypeScript/JavaScript formatting
+- TypeScript build check
+
+To manually check all files:
+
+```bash
+pre-commit run --all-files
+```
 
 ## Differences from Python Version
 

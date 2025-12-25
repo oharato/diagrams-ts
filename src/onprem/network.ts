@@ -2,55 +2,55 @@
  * OnPrem Network services
  */
 
-import { OnPremNode } from './base';
+import { OnPremNode } from "./base";
 
 class NetworkNode extends OnPremNode {
-  protected static type = 'network';
-  protected static iconDir = 'resources/onprem/network';
+  protected static type = "network";
+  protected static iconDir = "resources/onprem/network";
 }
 
 export class Apache extends NetworkNode {
-  protected static icon = 'apache.png';
+  protected static icon = "apache.png";
 }
 
 export class Consul extends NetworkNode {
-  protected static icon = 'consul.png';
+  protected static icon = "consul.png";
 }
 
 export class Envoy extends NetworkNode {
-  protected static icon = 'envoy.png';
+  protected static icon = "envoy.png";
 }
 
 export class Etcd extends NetworkNode {
-  protected static icon = 'etcd.png';
+  protected static icon = "etcd.png";
 }
 
 export class Haproxy extends NetworkNode {
-  protected static icon = 'haproxy.png';
+  protected static icon = "haproxy.png";
 }
 
 export class Internet extends NetworkNode {
-  protected static icon = 'internet.png';
+  protected static icon = "internet.png";
 }
 
 export class Istio extends NetworkNode {
-  protected static icon = 'istio.png';
+  protected static icon = "istio.png";
 }
 
 export class Kong extends NetworkNode {
-  protected static icon = 'kong.png';
+  protected static icon = "kong.png";
 }
 
 export class Nginx extends NetworkNode {
-  protected static icon = 'nginx.png';
+  protected static icon = "nginx.png";
 }
 
 export class Traefik extends NetworkNode {
-  protected static icon = 'traefik.png';
+  protected static icon = "traefik.png";
 }
 
 export class Zookeeper extends NetworkNode {
-  protected static icon = 'zookeeper.png';
+  protected static icon = "zookeeper.png";
 }
 
 // Aliases

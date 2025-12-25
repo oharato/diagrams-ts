@@ -4,25 +4,20 @@ repos:
     hooks:
     -   id: check-yaml
     -   id: end-of-file-fixer
-        exclude: '\.(ts|tsx|js|jsx)$'
     -   id: trailing-whitespace
-        exclude: '\.(ts|tsx|js|jsx)$'
 
--   repo: https://github.com/asottile/seed-isort-config
-    rev: v2.2.0
+-   repo: local
     hooks:
-    -   id: seed-isort-config
-        files: '\.py$'
+    -   id: oxfmt
+        name: oxfmt (TypeScript/JavaScript formatter)
+        entry: npx oxfmt
+        language: system
+        files: '\.(ts|tsx|js|jsx)$'
+        pass_filenames: true
 
--   repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.10.1
-    hooks:
-    -   id: isort
-        files: '\.py$'
-
--   repo: https://github.com/hhatto/autopep8
-    rev: v2.3.1
-    hooks:
-    -   id: autopep8
-        args: [--in-place, --aggressive, --aggressive, --max-line-length=120]
-        files: '\.py$'
+    -   id: oxlint
+        name: oxlint (TypeScript/JavaScript linter - warnings only)
+        entry: bash -c 'npx oxlint "$@" || true' --
+        language: system
+        files: '\.(ts|tsx|js|jsx)$'
+        pass_filenames: true

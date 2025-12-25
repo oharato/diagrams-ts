@@ -1,8 +1,8 @@
-import { randomBytes } from 'crypto';
-import { digraph, toDot } from 'ts-graphviz';
-import type { RootGraphModel, SubgraphModel } from 'ts-graphviz';
-import * as path from 'path';
-import * as fs from 'fs';
+import { randomBytes } from "crypto";
+import { digraph, toDot } from "ts-graphviz";
+import type { RootGraphModel, SubgraphModel } from "ts-graphviz";
+import * as path from "path";
+import * as fs from "fs";
 
 // Global contexts for diagrams and clusters
 let currentDiagram: Diagram | null = null;
@@ -33,9 +33,9 @@ export function setSubgraph(subgraph: RootGraphModel | SubgraphModel | null): vo
   currentSubgraph = subgraph;
 }
 
-type Direction = 'TB' | 'BT' | 'LR' | 'RL';
-type CurveStyle = 'ortho' | 'curved';
-type OutFormat = 'png' | 'jpg' | 'svg' | 'pdf' | 'dot';
+type Direction = "TB" | "BT" | "LR" | "RL";
+type CurveStyle = "ortho" | "curved";
+type OutFormat = "png" | "jpg" | "svg" | "pdf" | "dot";
 
 interface DiagramOptions {
   name?: string;
@@ -52,9 +52,9 @@ interface DiagramOptions {
 }
 
 export class Diagram {
-  private static readonly DIRECTIONS: Direction[] = ['TB', 'BT', 'LR', 'RL'];
-  private static readonly CURVESTYLES: CurveStyle[] = ['ortho', 'curved'];
-  private static readonly OUTFORMATS: OutFormat[] = ['png', 'jpg', 'svg', 'pdf', 'dot'];
+  private static readonly DIRECTIONS: Direction[] = ["TB", "BT", "LR", "RL"];
+  private static readonly CURVESTYLES: CurveStyle[] = ["ortho", "curved"];
+  private static readonly OUTFORMATS: OutFormat[] = ["png", "jpg", "svg", "pdf", "dot"];
 
   public readonly name: string;
   public readonly filename: string;
@@ -66,17 +66,17 @@ export class Diagram {
   private readonly _graph_attr: Record<string, string>;
   private readonly _node_attr: Record<string, string>;
   private readonly _edge_attr: Record<string, string>;
-  
+
   // ts-graphviz digraph instance
   public readonly dot: ReturnType<typeof digraph>;
 
   constructor(options: DiagramOptions = {}) {
     const {
-      name = '',
-      filename = '',
-      direction = 'LR',
-      curvestyle = 'ortho',
-      outformat = 'png',
+      name = "",
+      filename = "",
+      direction = "LR",
+      curvestyle = "ortho",
+      outformat = "png",
       autolabel = false,
       show = true,
       strict = false,
@@ -86,11 +86,11 @@ export class Diagram {
     } = options;
 
     this.name = name;
-    
+
     if (!name && !filename) {
-      this.filename = 'diagrams_image';
+      this.filename = "diagrams_image";
     } else if (!filename) {
-      this.filename = name.split(' ').join('_').toLowerCase();
+      this.filename = name.split(" ").join("_").toLowerCase();
     } else {
       this.filename = filename;
     }
@@ -123,28 +123,28 @@ export class Diagram {
     this._edge_attr = edge_attr;
 
     this.dot = digraph(this.name);
-    
+
     // Set graph direction (rankdir)
-    this.dot.set('rankdir', this._direction);
-    
+    this.dot.set("rankdir", this._direction);
+
     // Set edge curve style (splines)
-    this.dot.set('splines', this._curvestyle);
-    
+    this.dot.set("splines", this._curvestyle);
+
     // Apply custom graph attributes
     for (const [key, value] of Object.entries(this._graph_attr)) {
       this.dot.set(key as any, value);
     }
-    
+
     // Apply default node attributes
     if (Object.keys(this._node_attr).length > 0) {
       this.dot.node(this._node_attr);
     }
-    
+
     // Apply default edge attributes
     if (Object.keys(this._edge_attr).length > 0) {
       this.dot.edge(this._edge_attr);
     }
-    
+
     // Initialize subgraph context to the root graph
     setSubgraph(this.dot);
 
@@ -180,7 +180,7 @@ export class Diagram {
   }
 
   public render(): void {
-    console.log('Rendering diagram:', this.filename);
+    console.log("Rendering diagram:", this.filename);
     const dotSource = toDot(this.dot);
     fs.writeFileSync(`${this.filename}.dot`, dotSource);
     console.log(`DOT source written to ${this.filename}.dot`);
@@ -209,8 +209,8 @@ interface ClusterOptions {
 }
 
 export class Cluster {
-  private static readonly DIRECTIONS: Direction[] = ['TB', 'BT', 'LR', 'RL'];
-  private static readonly BGCOLORS = ['#E5F5FD', '#EBF3E7', '#ECE8F6', '#FDF7E3'];
+  private static readonly DIRECTIONS: Direction[] = ["TB", "BT", "LR", "RL"];
+  private static readonly BGCOLORS = ["#E5F5FD", "#EBF3E7", "#ECE8F6", "#FDF7E3"];
 
   public readonly label: string;
   public readonly name: string;
@@ -220,10 +220,10 @@ export class Cluster {
   private clusterSubgraph: SubgraphModel | null = null;
 
   constructor(options: ClusterOptions = {}) {
-    const { label = 'cluster', direction = 'LR', graph_attr = {} } = options;
+    const { label = "cluster", direction = "LR", graph_attr = {} } = options;
 
     this.label = label;
-    this.name = 'cluster_' + this.label.replace(/\s+/g, '_');
+    this.name = "cluster_" + this.label.replace(/\s+/g, "_");
 
     if (!this.validateDirection(direction)) {
       throw new Error(`"${direction}" is not a valid direction`);
@@ -231,7 +231,7 @@ export class Cluster {
 
     const diagram = getDiagram();
     if (!diagram) {
-      throw new Error('Global diagrams context not set up');
+      throw new Error("Global diagrams context not set up");
     }
     this.diagram = diagram;
     this.parent = getCluster();
@@ -258,25 +258,25 @@ export class Cluster {
 
   public async use<T>(callback: () => Promise<T> | T): Promise<T> {
     const parentSubgraph = getSubgraph();
-    
+
     if (!parentSubgraph) {
-      throw new Error('No parent subgraph context');
+      throw new Error("No parent subgraph context");
     }
-    
+
     // Create a new subgraph for this cluster
     const bgColor = Cluster.BGCOLORS[this.depth % Cluster.BGCOLORS.length];
-    
+
     const sub = parentSubgraph.subgraph(this.name);
-    sub.set('label', this.label);
-    sub.set('style', 'filled,rounded');
-    sub.set('fillcolor', bgColor);
-    sub.set('fontsize', 12);
-    sub.set('fontname', 'Sans-Serif');
-    
+    sub.set("label", this.label);
+    sub.set("style", "filled,rounded");
+    sub.set("fillcolor", bgColor);
+    sub.set("fontsize", 12);
+    sub.set("fontname", "Sans-Serif");
+
     // Store this subgraph for use by nested nodes
     this.clusterSubgraph = sub;
     setSubgraph(sub);
-    
+
     setCluster(this);
     try {
       const result = await callback();
@@ -306,7 +306,7 @@ export class Node {
   private readonly cluster: Cluster | null;
   private readonly attrs: Record<string, any>;
 
-  constructor(label: string = '', options: NodeOptions = {}) {
+  constructor(label: string = "", options: NodeOptions = {}) {
     const { nodeid, ...attrs } = options;
 
     this.id = nodeid || this.randId();
@@ -314,32 +314,32 @@ export class Node {
 
     const diagram = getDiagram();
     if (!diagram) {
-      throw new Error('Global diagrams context not set up');
+      throw new Error("Global diagrams context not set up");
     }
     this.diagram = diagram;
 
     if (this.diagram.autolabel) {
       const prefix = this.constructor.name;
       if (this.label) {
-        this.label = prefix + '\n' + this.label;
+        this.label = prefix + "\n" + this.label;
       } else {
         this.label = prefix;
       }
     }
 
     const icon = this.loadIcon();
-    const padding = 0.4 * (this.label.split('\n').length - 1);
-    
+    const padding = 0.4 * (this.label.split("\n").length - 1);
+
     this.attrs = icon
       ? {
-          shape: 'none',
+          shape: "none",
           height: String((this.constructor as typeof Node).height + padding),
           image: icon,
-          labelloc: 'b',
-          imagescale: 'true',
-          fixedsize: 'true',
-          margin: '0.3',
-          fontname: 'Sans-Serif',
+          labelloc: "b",
+          imagescale: "true",
+          fixedsize: "true",
+          margin: "0.3",
+          fontname: "Sans-Serif",
         }
       : {};
 
@@ -370,7 +370,7 @@ export class Node {
   }
 
   private randId(): string {
-    return randomBytes(16).toString('hex');
+    return randomBytes(16).toString("hex");
   }
 
   private loadIcon(): string | null {
@@ -378,7 +378,7 @@ export class Node {
     if (!ctor.iconDir || !ctor.icon) {
       return null;
     }
-    const basedir = path.resolve(__dirname, '..');
+    const basedir = path.resolve(__dirname, "..");
     return path.join(basedir, ctor.iconDir, ctor.icon);
   }
 
@@ -433,9 +433,9 @@ interface EdgeOptions {
 
 export class Edge {
   private static readonly DEFAULT_EDGE_ATTRS: Record<string, string> = {
-    fontcolor: '#2D3436',
-    fontname: 'Sans-Serif',
-    fontsize: '13',
+    fontcolor: "#2D3436",
+    fontname: "Sans-Serif",
+    fontsize: "13",
   };
 
   public node: Node | null;
@@ -444,10 +444,18 @@ export class Edge {
   private _attrs: Record<string, any>;
 
   constructor(options: EdgeOptions = {}) {
-    const { node = null, forward = false, reverse = false, label = '', color = '', style = '', ...attrs } = options;
+    const {
+      node = null,
+      forward = false,
+      reverse = false,
+      label = "",
+      color = "",
+      style = "",
+      ...attrs
+    } = options;
 
     if (node !== null && !(node instanceof Node)) {
-      throw new Error('node must be an instance of Node');
+      throw new Error("node must be an instance of Node");
     }
 
     this.node = node;
@@ -471,13 +479,13 @@ export class Edge {
   get attrs(): Record<string, any> {
     let direction: string;
     if (this.forward && this.reverse) {
-      direction = 'both';
+      direction = "both";
     } else if (this.forward) {
-      direction = 'forward';
+      direction = "forward";
     } else if (this.reverse) {
-      direction = 'back';
+      direction = "back";
     } else {
-      direction = 'none';
+      direction = "none";
     }
     return { ...this._attrs, dir: direction };
   }
