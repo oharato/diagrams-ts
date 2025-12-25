@@ -138,6 +138,21 @@ After building:
 ./dist/cli.js my-diagram.js
 ```
 
+## Batch Example Generation
+
+A script is provided to run all TypeScript files in the `examples/` directory and generate diagrams:
+
+```bash
+npm run generate-examples
+```
+
+This script:
+- Recursively searches the `examples/` directory for all `.ts` files
+- Executes each file and generates diagrams in the same directory as the source file
+- Processes 19 example files (including AWS, GCP, Azure, Kubernetes, Programming, and On-Premises examples)
+
+For more details, see [scripts/README.md](scripts/README.md).
+
 ## Development Tools
 
 This project uses high-performance modern tooling:
