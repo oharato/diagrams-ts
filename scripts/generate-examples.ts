@@ -7,25 +7,25 @@
  * and generates diagrams using diagrams-ts in the same directory as each TypeScript file.
  */
 
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 import * as path from 'path';
 import { execSync } from 'child_process';
 
 /**
  * Recursively find all TypeScript files in a directory
  */
-function findTypescriptFiles(dir: string): string[] {
+async function findTypescriptFiles(dir: string): Promise<string[]> {
   const files: string[] = [];
   
-  const items = fs.readdirSync(dir);
+  const items = await fs.readdir(dir);
   
   for (const item of items) {
     const fullPath = path.join(dir, item);
-    const stat = fs.statSync(fullPath);
+    const stat = await fs.stat(fullPath);
     
     if (stat.isDirectory()) {
       // Recursively search subdirectories
-      files.push(...findTypescriptFiles(fullPath));
+      files.push(...await findTypescriptFiles(fullPath));
     } else if (stat.isFile() && item.endsWith('.ts')) {
       files.push(fullPath);
     }
@@ -48,10 +48,10 @@ function executeTypescriptFile(filePath: string): void {
   try {
     // Execute the TypeScript file with tsx from the file's directory
     // This ensures the diagram is generated in the same directory as the source file
+    // Using template literal is safe here since fileName comes from fs.readdir
     execSync(`npx tsx ${fileName}`, {
       cwd: dir,
-      stdio: 'inherit',
-      encoding: 'utf-8'
+      stdio: 'inherit'
     });
     
     console.log(`✓ Successfully generated diagram for ${fileName}`);
@@ -64,7 +64,7 @@ function executeTypescriptFile(filePath: string): void {
 /**
  * Main function
  */
-function main() {
+async function main() {
   const examplesDir = path.join(__dirname, '..', 'examples');
   
   console.log('Batch Image Generation Script');
@@ -72,7 +72,7 @@ function main() {
   console.log(`Searching for TypeScript files in: ${examplesDir}\n`);
   
   // Find all TypeScript files
-  const tsFiles = findTypescriptFiles(examplesDir);
+  const tsFiles = await findTypescriptFiles(examplesDir);
   
   if (tsFiles.length === 0) {
     console.log('No TypeScript files found in examples/ directory');
@@ -97,4 +97,4 @@ function main() {
 }
 
 // Run the script
-main();
+main().catch(console.error);
