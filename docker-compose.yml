@@ -1,0 +1,7 @@
+services:
+  diagrams:
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: tail -f /dev/null

@@ -3,6 +3,7 @@ import { digraph, toDot } from "ts-graphviz";
 import type { RootGraphModel, SubgraphModel } from "ts-graphviz";
 import * as path from "path";
 import * as fs from "fs";
+import { execSync } from "child_process";
 
 // Global contexts for diagrams and clusters
 let currentDiagram: Diagram | null = null;
@@ -182,8 +183,30 @@ export class Diagram {
   public render(): void {
     console.log("Rendering diagram:", this.filename);
     const dotSource = toDot(this.dot);
-    fs.writeFileSync(`${this.filename}.dot`, dotSource);
-    console.log(`DOT source written to ${this.filename}.dot`);
+    const dotFile = `${this.filename}.dot`;
+    fs.writeFileSync(dotFile, dotSource);
+    console.log(`DOT source written to ${dotFile}`);
+
+    try {
+      execSync("dot -V", { stdio: "ignore" });
+    } catch (e) {
+      console.warn("Graphviz 'dot' executable not found. Please install Graphviz to generate images.");
+      return;
+    }
+
+    const formats = Array.isArray(this.outformat) ? this.outformat : [this.outformat];
+
+    for (const fmt of formats) {
+      if (fmt === "dot") continue;
+
+      const outfile = `${this.filename}.${fmt}`;
+      try {
+        execSync(`dot -T${fmt} "${dotFile}" -o "${outfile}"`);
+        console.log(`Successfully generated ${outfile}`);
+      } catch (e) {
+        console.error(`Failed to generate ${outfile}`);
+      }
+    }
   }
 
   public toString(): string {
@@ -218,12 +241,14 @@ export class Cluster {
   private readonly diagram: Diagram;
   private readonly parent: Cluster | null;
   private clusterSubgraph: SubgraphModel | null = null;
+  private readonly _graph_attr: Record<string, string>;
 
   constructor(options: ClusterOptions = {}) {
     const { label = "cluster", direction = "LR", graph_attr = {} } = options;
 
     this.label = label;
     this.name = "cluster_" + this.label.replace(/\s+/g, "_");
+    this._graph_attr = graph_attr;
 
     if (!this.validateDirection(direction)) {
       throw new Error(`"${direction}" is not a valid direction`);
@@ -272,6 +297,11 @@ export class Cluster {
     sub.set("fillcolor", bgColor);
     sub.set("fontsize", 12);
     sub.set("fontname", "Sans-Serif");
+
+    // Apply custom graph attributes
+    for (const [key, value] of Object.entries(this._graph_attr)) {
+      sub.set(key as any, value);
+    }
 
     // Store this subgraph for use by nested nodes
     this.clusterSubgraph = sub;
@@ -328,20 +358,35 @@ export class Node {
     }
 
     const icon = this.loadIcon();
-    const padding = 0.4 * (this.label.split("\n").length - 1);
 
-    this.attrs = icon
-      ? {
-          shape: "none",
-          height: String((this.constructor as typeof Node).height + padding),
-          image: icon,
-          labelloc: "b",
-          imagescale: "true",
-          fixedsize: "true",
-          margin: "0.3",
-          fontname: "Sans-Serif",
-        }
-      : {};
+    if (icon) {
+      const height = (this.constructor as typeof Node).height;
+      const imgSize = Math.round(height * 72); // Convert inches to points
+
+      const escapedLabel = this.label
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        .replace(/\n/g, "<BR/>");
+
+      const labelHtml = `<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+<TR><TD FIXEDSIZE="TRUE" WIDTH="${imgSize}" HEIGHT="${imgSize}"><IMG SRC="${icon}" SCALE="TRUE"/></TD></TR>
+<TR><TD>${escapedLabel}</TD></TR>
+</TABLE>>`;
+
+      this.attrs = {
+        label: labelHtml,
+        shape: "plain",
+        fontname: "Sans-Serif",
+        margin: "0",
+      };
+    } else {
+      this.attrs = {
+        label: this.label,
+      };
+    }
 
     Object.assign(this.attrs, attrs);
 

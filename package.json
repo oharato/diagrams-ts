@@ -15,7 +15,13 @@
     "format": "oxfmt src tests",
     "format:check": "oxfmt --check src tests",
     "prepublishOnly": "npm run build",
-    "generate-examples": "tsx scripts/generate-examples.ts"
+    "generate-examples": "tsx scripts/generate-examples.ts",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:gen": "docker compose run --rm diagrams npm run generate-examples",
+    "docker:test": "docker compose run --rm diagrams npm test",
+    "docker:sh": "docker compose run --rm diagrams /bin/bash"
   },
   "keywords": [
     "diagrams",
