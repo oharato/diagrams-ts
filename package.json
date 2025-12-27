@@ -19,7 +19,7 @@
     "docker:build": "docker compose build",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "docker:gen": "docker compose run --rm diagrams npm run generate-examples",
+    "docker:gen": "docker compose run --rm diagrams npm run generate-examples --",
     "docker:test": "docker compose run --rm diagrams npm test",
     "docker:sh": "docker compose run --rm diagrams /bin/bash"
   },

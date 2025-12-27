@@ -83,11 +83,20 @@ async function main() {
     process.exit(1);
   }
 
+  // Check for command line arguments to filter files
+  const args = process.argv.slice(2);
+  const filter = args.length > 0 ? args[0] : null;
+
   // Find all TypeScript files
-  const tsFiles = await findTypescriptFiles(examplesDir);
+  let tsFiles = await findTypescriptFiles(examplesDir);
+
+  if (filter) {
+    console.log(`Filtering files by: "${filter}"`);
+    tsFiles = tsFiles.filter((file) => file.includes(filter));
+  }
 
   if (tsFiles.length === 0) {
-    console.log("No TypeScript files found in examples/ directory");
+    console.log("No matching TypeScript files found in examples/ directory");
     return;
   }
 

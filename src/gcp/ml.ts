@@ -45,6 +45,10 @@ export class VisionAPI extends MLNode {
   protected static icon = "vision-api.png";
 }
 
+export class VertexAI extends MLNode {
+  protected static icon = "vertex-ai.png";
+}
+
 // Aliases
 export const AutoML = Automl;
 export const NLAPI = NaturalLanguageAPI;

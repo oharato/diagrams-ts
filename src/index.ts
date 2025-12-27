@@ -385,6 +385,13 @@ export class Node {
     } else {
       this.attrs = {
         label: this.label,
+        shape: "box",
+        style: "rounded,filled",
+        fillcolor: "#FFFFFF",
+        fontname: "Sans-Serif",
+        fontsize: "12",
+        margin: "0.2",
+        height: "0.6",
       };
     }
 
